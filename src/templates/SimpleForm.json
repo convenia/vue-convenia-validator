@@ -1,0 +1,34 @@
+[
+  { "name": "userName"
+  , "type": "text"
+  , "label": "Nome completo"
+  , "placeholder": "Nome completo"
+  , "validation": "required"
+  , "value": ""
+  }
+  ,
+  { "name": "birthday"
+  , "type": "text"
+  , "label": "Data de nascimento"
+  , "placeholder": "DD/MM/AAAA"
+  , "validation": ["required", "date"]
+  , "mask": "##/##/####"
+  , "value": ""
+  }
+  ,
+  { "name": "phoneNumber"
+  , "type": "text"
+  , "label": "Telefone"
+  , "placeholder": "Telefone"
+  , "validation": "required"
+  , "value": ""
+  }
+  ,
+  { "name": "city"
+  , "type": "text"
+  , "label": "Cidade"
+  , "placeholder": "Cidade"
+  , "validation": "required"
+  , "value": ""
+  }
+]
