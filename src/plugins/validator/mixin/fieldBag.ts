@@ -1,22 +1,18 @@
 import Field from './field'
 
-type FieldItem = {
-  id: string
-  value: any
-  name: string
-  el: HTMLInputElement
-  rules: { string: Object }
-}
-
 export default class FieldBag {
   _items: Field[]
 
-  constructor (items?: [FieldItem]) {
+  constructor (items?: [Field]) {
     this._items = items || []
   }
 
   get items () {
-    return this._items
+    console.log('_items: ', this._items)
+    return this._items.reduce((acc, item) => ({
+      ...acc,
+      [item.name]: item.flags
+    }), {})
   }
 
   push (item: Field | Field[]) {
@@ -25,6 +21,6 @@ export default class FieldBag {
     // Check if item has an `id`
     // Check if item is already present in the FieldBag instance
 
-    this._items.push.apply(this, Array.isArray(item) ? item : [ item ])
+    this._items.push.apply(this._items, Array.isArray(item) ? item : [ item ])
   }
 }

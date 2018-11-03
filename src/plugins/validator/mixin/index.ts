@@ -14,7 +14,7 @@ export default class FormValidator extends Vue {
     // Setup computed properties on the component
     if (!this.$options.computed) this.$options.computed = {}
 
-    this.$options.computed['$fields'] = ()  => this.$validator.fields
-    this.$options.computed['$errors'] = ()  => this.$validator.errors
+    this.$options.computed['$fields'] = () => this.$validator.fields.items
+    this.$options.computed['$errors'] = () => this.$validator.errors
   }
 }

@@ -31,6 +31,7 @@ export default class ScopedValidator {
         id: '',
         rules: null,
         value: '',
+        scope: '',
         name: templateField.name,
         el: fieldEl[0]
       }
