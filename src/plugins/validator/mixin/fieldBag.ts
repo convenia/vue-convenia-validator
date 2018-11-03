@@ -22,5 +22,6 @@ export default class FieldBag {
     // Check if item is already present in the FieldBag instance
 
     this._items.push.apply(this._items, Array.isArray(item) ? item : [ item ])
+    console.log('+items: ', this._items)
   }
 }

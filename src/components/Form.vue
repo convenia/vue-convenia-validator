@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Vue, Mixins, Watch } from 'vue-property-decorator'
 
 import formTemplate from '@/templates/SimpleForm.json'
 
@@ -19,6 +19,11 @@ import { Field } from '@/plugins/validator/types/index.ts'
 @Component
 export default class VueForm extends Mixins(FormValidator) {
   fields: Field[] = formTemplate
+
+  @Watch('$fields', { deep: true })
+  onFieldsChanged (val: any, oldVal: any) {
+    console.log('$fields changed! ', { val, oldVal, fields: this.$fields })
+  }
 
   created () {
     this.$validator.init(this.fields)
