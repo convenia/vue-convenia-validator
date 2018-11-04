@@ -1,10 +1,10 @@
 <template>
   <div class="vue-form">
-    <input
+    <c-input
       v-for="field in fields"
       :key="field.name"
       v-bind="field"
-    >
+    />
   </div>
 </template>
 
@@ -40,11 +40,6 @@ export default class VueForm extends Mixins(FormValidator) {
 
   width: 100%;
 
-  input {
-    font-size: 16px;
-    max-width: 200px;
-
-    &:not(:last-child) { margin-bottom: 15px; }
-  }
+  > .c-input { width: 400px; }
 }
 </style>
