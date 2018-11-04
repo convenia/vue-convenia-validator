@@ -1,10 +1,11 @@
 declare namespace Validation {
   export type FieldItem = {
     id: string
-    value: any
     name: string
+    value: any
     el: Element | HTMLInputElement
     rules: { string: Object } | null
+    scope?: string
   }
 
   export type FieldFlags = {
