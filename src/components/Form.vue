@@ -14,11 +14,10 @@ import { Component, Prop, Vue, Mixins, Watch } from 'vue-property-decorator'
 import formTemplate from '@/templates/SimpleForm.json'
 
 import FormValidator from '@/plugins/validator/mixin/index.ts'
-import { Field } from '@/plugins/validator/types/index.ts'
 
 @Component
 export default class VueForm extends Mixins(FormValidator) {
-  fields: Field[] = formTemplate
+  fields: any[] = formTemplate
 
   @Watch('$fields', { deep: true })
   onFieldsChanged (val: any, oldVal: any) {

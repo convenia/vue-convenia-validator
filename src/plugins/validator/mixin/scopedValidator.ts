@@ -1,7 +1,5 @@
 import { Vue as VueComponent } from 'vue-property-decorator'
 
-import * as types from '../types'
-
 import Field from './field'
 import ErrorBag from './errorBag'
 import FieldBag from './fieldBag'
@@ -18,11 +16,11 @@ export default class ScopedValidator {
     this.errors = new ErrorBag()
   }
 
-  init (template: types.Field[]) {
+  init (template: Field[]): void {
     this._vm.$nextTick(this.initFields.bind(this, template))
   }
 
-  initFields (template: types.Field[]) {
+  initFields (template: Field[]) {
     const fields = template.map((templateField) => {
       // Treat scoped forms here
       const fieldEl = this._vm.$el.querySelectorAll(`input[name="${templateField.name}"]`)
@@ -43,9 +41,21 @@ export default class ScopedValidator {
     this.fields.push(fields)
   }
 
+  /**
+   * Registers a field to be validated
+   * @param fieldOpts - an FieldOptions object to be passed to the Field
+   * constructor.
+   */
+  attach (fieldOpts: Validation.FieldItem) { }
+
+  detach () { }
+
+  flag () { }
+
+  reset () { }
+
   validate () { }
 
   validateAll () { }
 
-  reset () { }
 }

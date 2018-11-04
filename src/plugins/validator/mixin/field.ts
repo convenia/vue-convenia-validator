@@ -1,20 +1,3 @@
-type FieldItem = {
-  id: string
-  value: any
-  name: string
-  el: Element | HTMLInputElement
-  rules: { string: Object } | null
-}
-
-type FieldFlags = {
-  pristine: boolean
-  dirty: boolean
-  touched: boolean
-  valid: boolean
-  required: boolean
-  validated: boolean
-}
-
 export default class Field {
   value: any
   name: string
@@ -22,7 +5,7 @@ export default class Field {
   rules: { string: Object } | null
   scope: string
 
-  _flags: FieldFlags
+  _flags: Validation.FieldFlags
   = { pristine: false
     , dirty: false
     , touched: false
@@ -31,7 +14,7 @@ export default class Field {
     , validated: false
     }
 
-  constructor (options: FieldItem) {
+  constructor (options: Validation.FieldItem) {
     this.value = options.value
     this.name = options.name
     this.el = options.el
@@ -42,6 +25,10 @@ export default class Field {
 
   get flags () {
     return this._flags
+  }
+
+  createFlags () {
+
   }
 
   addActionListeners () {

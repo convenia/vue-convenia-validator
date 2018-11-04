@@ -1,14 +1,7 @@
-type FieldError = {
-  fieldName: string
-  errors: [Error]
-}
-
 export default class ErrorBag {
-  _items: [FieldError]
+  _items: [Validation.FieldError]
 
-  constructor () {
-
-  }
+  constructor () { }
 
   all (scope?: string): Array<any> { return [] }
 
