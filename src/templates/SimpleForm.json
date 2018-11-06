@@ -1,34 +1,107 @@
 [
-  { "name": "userName"
-  , "type": "text"
+  { "type": "text"
+  , "name": "fullName"
   , "label": "Nome completo"
   , "placeholder": "Nome completo"
   , "validation": "required"
   , "value": ""
-  }
-  ,
-  { "name": "birthday"
-  , "type": "text"
+  },
+  { "type": "select"
+  , "name": "nationality"
+  , "label": "Nacionalidade (s)"
+  , "placeholder": "Nacionalidade"
+  , "validation": ""
+  , "value": ""
+  , "displayBy": "label"
+  , "trackBy": "value"
+  , "options":
+      [ { "label": "Brasileiro (a)", "value": "brasileiro" }
+      , { "label": "Britânico (a)", "value": "britanico" }
+      , { "label": "Argentino (a)", "value": "argentino" }
+      ]
+  },
+  { "type": "select"
+  , "name": "federationUnit"
+  , "label": "UF Natal"
+  , "placeholder": "UF Natal"
+  , "validation": ""
+  , "value": ""
+  , "displayBy": "label"
+  , "trackBy": "value"
+  , "options":
+      [ { "label": "Birmingham", "value": "birmingham" }
+      , { "label": "São Paulo", "value": "são paulo" }
+      ]
+  },
+  { "type": "text"
+  , "name": "city"
+  , "label": "Cidade Natal"
+  , "placeholder": "Cidade Natal"
+  , "validation": ""
+  , "value": ""
+  },
+  { "type": "select"
+  , "name": "ethinicity"
+  , "label": "Cor/Raça"
+  , "placeholder": "Cor/Raça"
+  , "validation": ""
+  , "value": ""
+  , "displayBy": "label"
+  , "trackBy": "value"
+  , "options":
+      [ { "label": "Branco (a)", "value": "branco" }
+      , { "label": "Negro (a)", "value": "negro" }
+      , { "label": "Amarelo (a)", "value": "amarelo" }
+      , { "label": "Vermelho (a)", "value": "vermelho" }
+      ]
+  },
+  { "type": "select"
+  , "name": "gender"
+  , "label": "Gênero"
+  , "placeholder": "Gênero"
+  , "validation": ""
+  , "value": ""
+  , "displayBy": "label"
+  , "trackBy": "value"
+  , "options":
+      [ { "label": "Masculino", "value": "masculino" }
+      , { "label": "Feminino", "value": "feminino" }
+      , { "label": "Outro", "value": "outro" }
+      ]
+  },
+  { "type": "select"
+  , "name": "maritalStatus"
+  , "label": "Estado Civil"
+  , "placeholder": "Estado Civil"
+  , "validation": ""
+  , "value": ""
+  , "displayBy": "label"
+  , "trackBy": "value"
+  , "options":
+      [ { "label": "Casado (a)", "value": "casado" }
+      , { "label": "Solteiro (a)", "value": "solteiro" }
+      , { "label": "Viúvo (a)", "value": "viuvo" }
+      ]
+  },
+  { "type": "text"
+  , "name": "birthday"
   , "label": "Data de nascimento"
-  , "placeholder": "DD/MM/AAAA"
-  , "validation": ["required", "date"]
-  , "mask": "##/##/####"
-  , "value": ""
-  }
-  ,
-  { "name": "phoneNumber"
-  , "type": "text"
-  , "label": "Telefone"
-  , "placeholder": "Telefone"
+  , "placeholder": "Data de nascimento"
   , "validation": "required"
   , "value": ""
-  }
-  ,
-  { "name": "city"
-  , "type": "text"
-  , "label": "Cidade"
-  , "placeholder": "Cidade"
-  , "validation": "required"
+  },
+  { "type": "text"
+  , "name": "motherName"
+  , "label": "Nome da mâe"
+  , "placeholder": "Nome da mâe"
+  , "validation": ""
+  , "value": ""
+  },
+  { "type": "text"
+  , "name": "fatherName"
+  , "label": "Nome do pai"
+  , "placeholder": "Nome do pai"
+  , "validation": ""
   , "value": ""
   }
 ]

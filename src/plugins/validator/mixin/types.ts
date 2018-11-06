@@ -1,20 +1,37 @@
-declare namespace Validation {
-  export type FieldItem = {
-    id: string
+declare namespace Form {
+  export type ValidationRules = string | Array<string> | { [rule: string]: any }
+  export type FieldTemplate = InputField | SelectField
+
+  export interface InputField {
+    type: string
     name: string
+    value: string
+    label?: string
+    validation?: ValidationRules
+    validationMsg?: string
+    placeholder?: string
+  }
+
+  export interface SelectField extends InputField {
+    displayBy?: string
+    trackBy?: string
+    options: Array<string> | Array<{ label: string, value: any }>
+  }
+
+  export interface FieldItem {
     value: any
-    el: Element | HTMLInputElement
-    rules: { string: Object } | null
+    name: string
     scope?: string
+    el: Element | HTMLInputElement
+    rules?: ValidationRules
   }
 
   export type FieldFlags = {
     pristine: boolean
     dirty: boolean
     touched: boolean
+    changed: boolean
     valid: boolean
-    required: boolean
-    validated: boolean
   }
 
   export type FieldError = {

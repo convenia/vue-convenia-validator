@@ -1,36 +1,26 @@
 <template>
   <div class="vue-form">
-    <c-input
-      v-for="field in fields"
-      :key="field.name"
-      v-bind="field"
+    <c-form
+      :fields="fields"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Mixins, Watch } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 
+import CForm from '@/components/CForm.vue'
 import formTemplate from '@/templates/SimpleForm.json'
 
-import FormValidator from '@/plugins/validator/mixin/index.ts'
-
-@Component
-export default class VueForm extends Mixins(FormValidator) {
-  fields: any[] = formTemplate
-
-  @Watch('$fields', { deep: true })
-  onFieldsChanged (val: any, oldVal: any) {
-    console.log('$fields changed! ', { val, oldVal, fields: this.$fields })
-  }
-
-  created () {
-    this.$validator.init(this.fields)
-  }
+@Component({
+  components: { CForm }
+})
+export default class VueForm extends Vue {
+  fields: Form.FieldTemplate[] = formTemplate
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 
 .vue-form {
   display: flex;
@@ -40,6 +30,10 @@ export default class VueForm extends Mixins(FormValidator) {
 
   width: 100%;
 
-  > .c-input { width: 400px; }
+  & > .c-form { width: 400px; }
+  & > .c-form > .fields > .select > .label { left: 0px; }
+
+  & > .c-form > .actions { justify-content: center; }
+  & > .c-form > .actions > .action { max-width: 100%; }
 }
 </style>

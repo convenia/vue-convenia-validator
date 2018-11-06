@@ -1,5 +1,5 @@
 export default class ErrorBag {
-  _items: [Validation.FieldError]
+  _items: [Form.FieldError]
 
   constructor () { }
 
