@@ -26,25 +26,20 @@ export default class ScopedValidator {
   }
 
   getValidations () {
-    const mapFlags = (initial: object,scope?: string) => {
-      const errors = () => ({})
-      const fields = () => this.fields.all(scope)
+    const mapFlags = (scope?: string) => ({
+      errors: {},
+      fields: this.fields.all(scope)
         .reduce((acc, field: Field) => ({ ...acc, [field.name]: field.flags }), {}) 
-
-      Object.defineProperty(initial, '$fields', { get: fields, enumerable: true })
-      Object.defineProperty(initial, '$errors', { get: errors, enumerable: true })
-
-      return initial
-    }
+    })
 
     const mapFormScopes = (acc: object, scope: string) => ({
       ...acc,
-      [scope]: mapFlags({}, scope)
+      [scope]: mapFlags(scope)
     })
 
     this.validations = this.scopes.length > 1
       ? this.scopes.reduce(mapFormScopes, this.validations)
-      : mapFlags(this.validations)
+      : mapFlags()
   }
 
   init (template: FormTemplate): void {
@@ -91,7 +86,7 @@ export default class ScopedValidator {
     const fields: NodeList = this._vm.$el.querySelectorAll(fieldQuery)
 
     if (!fields.length)
-      console.warn(`Field "${field.name}" could not be found in the DOM`)
+      console.warn(`CeeValidate: Field "${field.name}" could not be found in the DOM`)
 
     return <Element>fields[0]
   }

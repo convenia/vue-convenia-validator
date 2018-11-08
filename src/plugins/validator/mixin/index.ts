@@ -23,7 +23,7 @@ export default class FormValidator extends Vue {
     // Mark getter as reactive
 
     // @params: state, prop name, prop value
-    Vue.util.defineReactive(this.$validator, '$validations', this.$validator.validations)
+    Vue.util.defineReactive(this.$validator, 'validations', this.$validator.validations)
     this.$options.computed['$validations'] = () => this.$validator.validations
   }
 }

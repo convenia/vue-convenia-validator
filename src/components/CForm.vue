@@ -58,8 +58,8 @@ type SelectFieldOption = string | { label: string, value: any }
 @Component
 export default class CForm extends Mixins(FormValidator) {
   @Prop(Array) fields!: Form.FieldTemplate[]
-  @Prop(Boolean) loading: boolean
   @Prop(Boolean) disabled: boolean
+  @Prop(Boolean) loading: boolean
 
   @Watch('$validations', { deep: true })
   onValidation (val) { console.log('CForm.validations: ', this.$validations) }
@@ -96,7 +96,7 @@ export default class CForm extends Mixins(FormValidator) {
        , "value": ""
        }]
 
-    this.$validator.init({ formData: this.fields })
+    this.$validator.init({ formData: this.fields, test })
 
     this.formData = this.fields.reduce((acc, field) => ({
       ...acc,
