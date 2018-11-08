@@ -3,6 +3,7 @@ import { Vue as VueComponent } from 'vue-property-decorator'
 import Field from './field'
 import ErrorBag from './errorBag'
 import FieldBag from './fieldBag'
+import * as rules from '../rules'
 
 type ScopedTemplate = { [scope: string]: Form.FieldTemplate[] }
 type FormTemplate = ScopedTemplate | Form.FieldTemplate[]
@@ -12,12 +13,46 @@ export default class ScopedValidator {
 
   public fields: FieldBag
   public errors: ErrorBag
+  public scopes: string[] = []
+  private _validations: object = {}
 
   constructor (vm: VueComponent) {
     this._vm = vm
 
     this.fields = new FieldBag()
     this.errors = new ErrorBag()
+
+    if (vm.$options.validation) this.init(vm.$options.validation)
+  }
+
+  get validations () {
+    return this._validations
+  }
+
+  getValidations () {
+    const mapFlags = (initial: object,scope?: string) => {
+      const errors = () => ({})
+      const fields = () => this.fields.all(scope)
+        .reduce((acc, field: Field) => ({ ...acc, [field.name]: field.flags }), {}) 
+
+      Object.defineProperty(initial, '$fields', { get: fields, enumerable: true })
+      Object.defineProperty(initial, '$errors', { get: errors, enumerable: true })
+
+      return initial
+    }
+
+    const mapFormScopes = (acc: object, scope: string) => ({
+      ...acc,
+      [scope]: mapFlags({}, scope)
+    })
+
+    const validations = this.scopes.length
+      ? this.scopes.reduce(mapFormScopes, {})
+      : mapFlags({ })
+
+    console.log('get.validations: ', validations)
+
+    return validations
   }
 
   init (template: FormTemplate): void {
@@ -30,6 +65,7 @@ export default class ScopedValidator {
       const fieldOptions = {
         scope,
         el: fieldEl,
+        vm: this._vm,
         name: fieldTemplate.name,
         value: fieldTemplate.value,
         rules: fieldTemplate.validation
@@ -43,14 +79,16 @@ export default class ScopedValidator {
         return scopes[scope].map(field => mapFields(field, scope))
       })
 
-      return Array.prototype.concat(scopedFields)
+      return Array.prototype.concat.apply([], scopedFields)
     }
 
     const fields: Field[] = Array.isArray(template)
       ? template.map(field => mapFields(field))
-      : mapScopes(template)
+      : (this.scopes = Object.keys(template)) && mapScopes(template) 
 
+    this.scopes = Array.isArray(template) ? [] : Object.keys(template)
     this.fields.push(fields)
+    this._validations = this.getValidations()
   }
 
   getFieldEl (field: Form.FieldTemplate, scope?: string): Element {
@@ -71,15 +109,23 @@ export default class ScopedValidator {
    * @param fieldOpts - an FieldOptions object to be passed to the Field
    * constructor.
    */
+
+  validate (field: Field): boolean {
+    if (!field.rules || !(field.rules || []).length) return true
+
+    const result = field.rules.map(({ rule: name }) => rules[name].validate(field.value))
+
+    console.log('validation result: ', result)
+    console.log('show thme validations: ', this.validations)
+
+    return result.every((passed: boolean) => passed)
+  }
+
+  validateAll () { }
+
   attach (fieldOpts: Form.FieldItem) { }
 
   detach () { }
 
-  flag () { }
-
   reset () { }
-
-  validate () { }
-
-  validateAll () { }
 }

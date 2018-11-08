@@ -1,5 +1,5 @@
 declare namespace Form {
-  export type ValidationRules = string | Array<string> | { [rule: string]: any }
+  export type ValidationRules = string | Array<string> | { [rule: string]: any } | undefined
   export type FieldTemplate = InputField | SelectField
 
   export interface InputField {
@@ -19,6 +19,7 @@ declare namespace Form {
   }
 
   export interface FieldItem {
+    vm: any 
     value: any
     name: string
     scope?: string

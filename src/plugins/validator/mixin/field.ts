@@ -1,13 +1,19 @@
+import FormValidator from './index'
+
+type NormalizedRule = { rule: string, args?: any }
+
 export default class Field {
-  value: any
-  name: string
-  scope?: string
-  rules?: Form.ValidationRule
-  el: Element | HTMLInputElement
+  private _vm: FormValidator
+
+  public value: any
+  public name: string
+  public scope?: string
+  public rules?: NormalizedRule[]
+  public el: Element | HTMLInputElement
 
   private initialValue: string
 
-  _flags: Form.FieldFlags
+  flags: Form.FieldFlags
   = { pristine: false
     , dirty: false
     , changed: false
@@ -17,26 +23,53 @@ export default class Field {
 
   constructor (options: Form.FieldItem) {
     this.el = options.el
+    this._vm = options.vm
     this.name = options.name
     this.value = options.value
-    this.rules = options.rules
     this.scope = options.scope
-    this._flags = this.createFlags()
+    this.flags = this.createFlags()
+    this.rules = this.mapRules(options.rules)
     this.initialValue = options.value
 
     this.init(options)
   }
 
-  // Not even sure if we need this
-  get flags () {
-    return this._flags
+  get validator (): any {
+    if (!this._vm || !this._vm.$validator) return { validate: () => {} } 
+
+    return this._vm.$validator
   }
 
-  validate (): boolean { return false }
+  get watch (): any {
+    if (!this._vm || !this._vm.$validator) return
+
+    return this._vm.$watch.bind(this._vm)
+  }
+
+  // Rule example: "required|date_format:DD/MM/YYY|between:10,30"
+  mapRules (rules: Form.ValidationRules): Array<NormalizedRule> {
+    const stringToRules = (ruleDef: string) => ({
+      rule: ruleDef.split(':')[0],
+      args: ruleDef.split(':')[1] && ruleDef.split(':')[1].split(',')
+    })
+
+    const objToRules = (rulesObj: { [rule: string]: string }) => 
+      Object.keys(rulesObj).map(ruleName => ({
+        rule: ruleName,
+        args: rulesObj[ruleName]
+      }))
+
+    return typeof rules === 'string'
+      ? rules.split('|').map(stringToRules)
+      : Array.isArray(rules) ? rules.map(stringToRules)
+      : rules && rules.constructor === Object ? objToRules(rules)
+      : []
+  }
 
   init (options: Form.FieldItem): void {
-    if (process.env.NODE_ENV !== 'production' && !this.name)
+    if (process.env.NODE_ENV !== 'production' && !this.name) {
       console.warn('A field declaration is missing a "name" attribute')
+    }
 
     this.addActionListeners()
     this.addValueListeners()
@@ -49,7 +82,7 @@ export default class Field {
       dirty: !!this.value,
       touched: false,
       changed: false,
-      valid: this.validate()
+      valid: false
     }
   }
 
@@ -58,21 +91,16 @@ export default class Field {
   // value, when a change happes, we execute the proper
   // validation method.
   addValueListeners (): void {
-    if (!this.el) return
+    if (!this.watch) return
 
-    const events = ['input', 'change']
-    const listener = (event: any) => {
-      const value = (event.target || { value: '' }).value
-      console.log('listener value: ', value)
-
+    const listener = (value: any) => {
       this.value = value
-      this._flags.changed = this.value != this.initialValue
-      this.validate()
+      this.flags.changed = this.value !== this.initialValue
+      this.flags.valid = this.validator.validate(this)
     }
 
-    events.forEach(event => {
-      this.el.addEventListener(event, listener)
-    })
+    const fieldPath = this.scope ? `${this.scope}.${this.name}` : this.name
+    this.watch(fieldPath, listener.bind(this))
   }
 
   // Add listeners mostly for the touched and dirty flags
@@ -81,13 +109,11 @@ export default class Field {
   addActionListeners (): void {
     if (!this.el) return
 
-    const onBlur = () => {
-      this._flags.touched = true
-    }
+    const onBlur = () => { this.flags.touched = true }
 
     const onInput = () => {
-      this._flags.dirty = true
-      this._flags.pristine = false
+      this.flags.dirty = true
+      this.flags.pristine = false
     }
 
     this.el.addEventListener('focusout', onBlur.bind(this), { once: true })

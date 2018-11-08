@@ -1,46 +1,55 @@
 <template>
-  <form class="c-form" :name="scope" @submit.prevent="$emit('submit', formData)">
-    <div class="fields">
-      <slot>
-        <template v-for="field in fields">
-          <!-- Add support for checkboxes, radio buttons, and textareas -->
-
-          <c-select
-            v-if="['select'].includes(field.type)"
-            class="select field"
-            :key="field.name"
-            :name="field.name"
-            :validation="getValidationMsg(field)"
-            :value="getSelectValue(field)"
-            v-bind="field"
-            @input="formData[field.name] = field.trackBy ? $event[field.trackBy] : $event"
-          />
-
-          <c-input
-            v-else
-            class="field"
-            :name="field.name"
-            :key="field.name"
-            :validation="getValidationMsg(field.name)"
-            v-bind="field"
-            v-model="formData[field.name]"
-          />
-        </template>
-      </slot>
+  <div class="c-form-container">
+    <div class="validations">
+      <pre>
+        {{ validations }}
+      </pre>
     </div>
 
-    <div class="actions">
-      <slot name="actions">
-        <c-button primary class="action">
-          Salvar
-        </c-button>
-      </slot>
-    </div>
-  </form>
+    <form class="c-form" name="formData" @submit.prevent="$emit('submit', formData)">
+      <div class="fields">
+        <slot>
+          <template v-for="field in fields">
+            <!-- Add support for checkboxes, radio buttons, and textareas -->
+
+            <c-select
+              v-if="['select'].includes(field.type)"
+              class="select field"
+              :key="field.name"
+              :name="field.name"
+              :validation="getValidationMsg(field)"
+              :value="getSelectValue(field)"
+              v-bind="field"
+              @input="formData[field.name] = field.trackBy ? $event[field.trackBy] : $event"
+            />
+
+            <c-input
+              v-else
+              class="field"
+              :name="field.name"
+              :key="field.name"
+              :validation="getValidationMsg(field.name)"
+              v-bind="field"
+              :value="formData[field.name]"
+              @input="formData[field.name] = $event"
+            />
+          </template>
+        </slot>
+      </div>
+
+      <div class="actions">
+        <slot name="actions">
+          <c-button primary class="action" @click.stop.prevent="submit">
+            Salvar
+          </c-button>
+        </slot>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Mixins } from 'vue-property-decorator'
+import { Vue, Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 
 import FormValidator from '@/plugins/validator/mixin'
 
@@ -51,13 +60,15 @@ export default class CForm extends Mixins(FormValidator) {
   @Prop(Array) fields!: Form.FieldTemplate[]
   @Prop(Boolean) loading: boolean
   @Prop(Boolean) disabled: boolean
-  @Prop(String) scope: string
+
+  @Watch('validations')
+  onValidation (val) { console.log('CForm.validations: ', this.validations) }
 
   private formData: { [name: string]: any } = { }
 
   getValidationMsg (field : Form.FieldTemplate): string {
-    return this.$errors.has(field.name)
-      ? field.validationMsg || this.$errors.first(field.name)
+    return /* this.$errors.has(field.name) */ true
+      ? field.validationMsg /* || this.$errors.first(field.name) */
       : ''
   }
 
@@ -71,8 +82,21 @@ export default class CForm extends Mixins(FormValidator) {
     }) || ''
   }
 
+  submit () {
+    console.log('CForm.validator: ', this.$validator)
+  }
+
   created () {
-    this.$validator.init(this.scope ? { [this.scope]: this.fields } : this.fields)
+    const test =
+      [{ "type": "text"
+       , "name": "testfullName"
+       , "label": "Nome completo"
+       , "placeholder": "Nome completo"
+       , "validation": "required"
+       , "value": ""
+       }]
+      
+    this.$validator.init({ formData: this.fields, test })
 
     this.formData = this.fields.reduce((acc, field) => ({
       ...acc,
@@ -83,6 +107,12 @@ export default class CForm extends Mixins(FormValidator) {
 </script>
 
 <style lang="scss">
+
+.c-form-container {
+  display: flex;
+  justify-content: space-between;
+}
+
 .c-form {
 
   & > .fields {

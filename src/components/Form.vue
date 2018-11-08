@@ -30,10 +30,12 @@ export default class VueForm extends Vue {
 
   width: 100%;
 
-  & > .c-form { width: 400px; }
-  & > .c-form > .fields > .select > .label { left: 0px; }
+  & > .c-form-container { width: 100%; padding: 0 250px; }
 
-  & > .c-form > .actions { justify-content: center; }
-  & > .c-form > .actions > .action { max-width: 100%; }
+  & > .c-form-container > .c-form { width: 400px; }
+  & > .c-form-container > .c-form > .fields > .select > .label { left: 0px; }
+
+  & > .c-form-container > .c-form > .actions { justify-content: center; }
+  & > .c-form-container > .c-form > .actions > .action { max-width: 100%; }
 }
 </style>
