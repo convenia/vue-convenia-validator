@@ -27,7 +27,9 @@ export default class ScopedValidator {
 
   getValidations () {
     const mapFlags = (scope?: string) => ({
-      errors: {},
+      errors: this.errors.all(scope)
+        .reduce((acc, error) => ({ ...acc, [error.field]: error.message }), {}),
+
       fields: this.fields.all(scope)
         .reduce((acc, field: Field) => ({ ...acc, [field.name]: field.flags }), {}) 
     })
@@ -101,7 +103,15 @@ export default class ScopedValidator {
     if (!field.rules || !(field.rules || []).length) return true
 
     const result = field.rules.map(({ rule: name }) => {
-      return rules[name].validate(field.value)
+      const valid = rules[name].validate(field.value)
+      const message = rules[name].message
+
+      if (!valid)
+        this.errors.push({ field: field.name, scope: field.scope, message })
+      else
+        this.errors.remove(field.name, field.scope)
+
+      return valid
     })
 
     return result.every((passed: boolean) => passed)

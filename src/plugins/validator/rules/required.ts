@@ -9,5 +9,5 @@ const validate = (value: any) => {
 
 export default {
   validate,
-  message: ''
+  message: 'Campo obrigatório'
 }

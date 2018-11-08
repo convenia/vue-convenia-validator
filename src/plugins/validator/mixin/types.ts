@@ -34,9 +34,4 @@ declare namespace Form {
     changed: boolean
     valid: boolean
   }
-
-  export type FieldError = {
-    fieldName: string
-    errors: [Error]
-  }
 }

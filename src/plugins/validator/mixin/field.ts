@@ -71,7 +71,6 @@ export default class Field {
       console.warn('A field declaration is missing a "name" attribute')
     }
 
-    this.addActionListeners()
     this.addValueListeners()
   }
 
@@ -91,34 +90,23 @@ export default class Field {
   // value, when a change happes, we execute the proper
   // validation method.
   addValueListeners (): void {
-    if (!this.watch) return
+    if (!this.watch || !this.el) return
 
-    const listener = (value: any) => {
-      console.log(`${this.name} value: `, value)
+    const onBlur = () => { this.flags.touched = true }
+
+    const onInput = (value: any) => {
+      if (!this.flags.dirty) {
+        this.flags.dirty = true
+        this.flags.pristine = false
+      }
 
       this.value = value
       this.flags.changed = this.value !== this.initialValue
       this.flags.valid = this.validator.validate(this)
     }
 
-    const fieldPath = this.scope ? `${this.scope}.${this.name}` : this.name
-    this.watch(fieldPath, listener.bind(this))
-  }
-
-  // Add listeners mostly for the touched and dirty flags
-  // these are only one-time listeners, meaning that they
-  // will be removed after firing for the first time.
-  addActionListeners (): void {
-    if (!this.el) return
-
-    const onBlur = () => { this.flags.touched = true }
-
-    const onInput = () => {
-      this.flags.dirty = true
-      this.flags.pristine = false
-    }
 
     this.el.addEventListener('focusout', onBlur.bind(this), { once: true })
-    this.el.addEventListener('input', onInput.bind(this), { once: true })
+    this.watch(this.scope ? `${this.scope}.${this.name}` : this.name, onInput.bind(this))
   }
 }

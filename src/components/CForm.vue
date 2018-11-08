@@ -96,7 +96,7 @@ export default class CForm extends Mixins(FormValidator) {
        , "value": ""
        }]
 
-    this.$validator.init({ formData: this.fields, test })
+    this.$validator.init({ formData: this.fields })
 
     this.formData = this.fields.reduce((acc, field) => ({
       ...acc,
