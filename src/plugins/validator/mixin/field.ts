@@ -94,6 +94,8 @@ export default class Field {
     if (!this.watch) return
 
     const listener = (value: any) => {
+      console.log(`${this.name} value: `, value)
+
       this.value = value
       this.flags.changed = this.value !== this.initialValue
       this.flags.valid = this.validator.validate(this)

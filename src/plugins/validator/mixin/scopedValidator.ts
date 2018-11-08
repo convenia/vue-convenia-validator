@@ -14,7 +14,7 @@ export default class ScopedValidator {
   public fields: FieldBag
   public errors: ErrorBag
   public scopes: string[] = []
-  private _validations: object = {}
+  public validations: object = {}
 
   constructor (vm: VueComponent) {
     this._vm = vm
@@ -23,10 +23,6 @@ export default class ScopedValidator {
     this.errors = new ErrorBag()
 
     if (vm.$options.validation) this.init(vm.$options.validation)
-  }
-
-  get validations () {
-    return this._validations
   }
 
   getValidations () {
@@ -46,13 +42,9 @@ export default class ScopedValidator {
       [scope]: mapFlags({}, scope)
     })
 
-    const validations = this.scopes.length
-      ? this.scopes.reduce(mapFormScopes, {})
-      : mapFlags({ })
-
-    console.log('get.validations: ', validations)
-
-    return validations
+    this.validations = this.scopes.length > 1
+      ? this.scopes.reduce(mapFormScopes, this.validations)
+      : mapFlags(this.validations)
   }
 
   init (template: FormTemplate): void {
@@ -88,7 +80,7 @@ export default class ScopedValidator {
 
     this.scopes = Array.isArray(template) ? [] : Object.keys(template)
     this.fields.push(fields)
-    this._validations = this.getValidations()
+    this.getValidations()
   }
 
   getFieldEl (field: Form.FieldTemplate, scope?: string): Element {
@@ -113,10 +105,9 @@ export default class ScopedValidator {
   validate (field: Field): boolean {
     if (!field.rules || !(field.rules || []).length) return true
 
-    const result = field.rules.map(({ rule: name }) => rules[name].validate(field.value))
-
-    console.log('validation result: ', result)
-    console.log('show thme validations: ', this.validations)
+    const result = field.rules.map(({ rule: name }) => {
+      return rules[name].validate(field.value)
+    })
 
     return result.every((passed: boolean) => passed)
   }

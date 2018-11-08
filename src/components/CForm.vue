@@ -2,7 +2,7 @@
   <div class="c-form-container">
     <div class="validations">
       <pre>
-        {{ validations }}
+        {{ $validations }}
       </pre>
     </div>
 
@@ -61,8 +61,8 @@ export default class CForm extends Mixins(FormValidator) {
   @Prop(Boolean) loading: boolean
   @Prop(Boolean) disabled: boolean
 
-  @Watch('validations')
-  onValidation (val) { console.log('CForm.validations: ', this.validations) }
+  @Watch('$validations', { deep: true })
+  onValidation (val) { console.log('CForm.validations: ', this.$validations) }
 
   private formData: { [name: string]: any } = { }
 
@@ -95,8 +95,8 @@ export default class CForm extends Mixins(FormValidator) {
        , "validation": "required"
        , "value": ""
        }]
-      
-    this.$validator.init({ formData: this.fields, test })
+
+    this.$validator.init({ formData: this.fields })
 
     this.formData = this.fields.reduce((acc, field) => ({
       ...acc,

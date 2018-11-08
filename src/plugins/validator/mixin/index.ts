@@ -23,35 +23,7 @@ export default class FormValidator extends Vue {
     // Mark getter as reactive
 
     // @params: state, prop name, prop value
-    Vue.util.defineReactive(this.$validator, 'validations', this.$validator.validations)
+    Vue.util.defineReactive(this.$validator, '$validations', this.$validator.validations)
     this.$options.computed['$validations'] = () => this.$validator.validations
-
-    /*
-    this.$options.computed['$validations'] = function validationsGetter() {
-      const mapFlags = (initial: object,scope?: string) => {
-        const errors = () => ({})
-        const fields = () => this.$validator.fields.all(scope)
-          .reduce((acc, field: Field) => ({ ...acc, [field.name]: field.flags }), {}) 
-
-        Object.defineProperty(initial, '$fields', { get: fields, enumerable: true })
-        Object.defineProperty(initial, '$errors', { get: errors, enumerable: true })
-
-        return initial
-      }
-
-      const mapFormScopes = (acc: object, scope: string) => ({
-        ...acc,
-        [scope]: mapFlags({}, scope)
-      })
-
-      const validations = this.$validator.scopes.length
-        ? this.$validator.scopes.reduce(mapFormScopes, {})
-        : mapFlags({ })
-
-      console.log('get.validations: ', validations)
-
-      return validations
-    }
-    */
   }
 }
