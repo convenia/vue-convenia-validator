@@ -54,7 +54,7 @@
 <script lang="ts">
 import { Vue, Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 
-import FormValidator from '@/plugins/validator/mixin'
+import FormValidator from '@/plugins/validator'
 
 type SelectFieldOption = string | { label: string, value: any }
 

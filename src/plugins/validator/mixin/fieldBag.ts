@@ -16,7 +16,7 @@ export default class FieldBag {
   /**
    * Returns all fields registered in the FieldBag
    * @param scope - If present, returns all the fields from that scope
-   * @return Array<field> array of field items
+   * @return Array<Field> array of field items
    */
   all (scope?: string): Array<Field> {
     return scope

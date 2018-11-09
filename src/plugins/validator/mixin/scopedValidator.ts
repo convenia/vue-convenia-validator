@@ -97,7 +97,9 @@ export default class ScopedValidator {
   }
 
   validateAll (scope?: string) {
-    this.fields.all(scope).forEach((field: Field) => this.validate(field.name, field.scope))
+    this.fields.all(scope).forEach((field: Field) => {
+      this.validate(field.name, field.scope)
+    })
   }
 
   reset (scope?: string) {

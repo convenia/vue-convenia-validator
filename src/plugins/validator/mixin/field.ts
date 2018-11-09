@@ -1,4 +1,4 @@
-import FormValidator from './index'
+import FormValidator from '../index'
 
 type NormalizedRule = { rule: string, args?: any }
 
