@@ -83,29 +83,29 @@ export default class ScopedValidator {
     return <Element>fields[0]
   }
 
-  /**
-   * Registers a field to be validated
-   * @param fieldOpts - an FieldOptions object to be passed to the Field
-   * constructor.
-   */
+  validate (fieldName: string, scope?: string): void {
+    const field = this.fields.get(fieldName, scope)
 
-  validate (field: Field): Array<string> {
-    if (!field.rules || !(field.rules || []).length) return []
+    if (!field || !(field.rules || []).length) return
 
-    return field.rules
+    const fieldErrors = field.rules
       .map(({ rule: name }) => !rules[name].validate(field.value) && rules[name].message)
       .filter((message: string) => !!message)
+
+    field.setFlag('errors', fieldErrors)
+    field.setFlag('valid', !fieldErrors.length)
   }
 
   validateAll (scope?: string) {
-    this.fields.all(scope).forEach((field: Field) => field.validate())
+    this.fields.all(scope).forEach((field: Field) => this.validate(field.name, field.scope))
+  }
+
+  reset (scope?: string) {
+    this.fields.all(scope).forEach((field: Field) => field.reset())
   }
 
   attach (fieldOpts: Form.FieldItem) { }
 
   detach () { }
 
-  reset (scope?: string) {
-    this.fields.all(scope).forEach((field: Field) => field.reset())
-  }
 }

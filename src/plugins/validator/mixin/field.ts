@@ -6,13 +6,7 @@ export default class Field {
   private _vm: FormValidator
   private initialValue: string
 
-  public value: any
-  public name: string
-  public scope?: string
-  public rules?: NormalizedRule[]
-  public el: Element | HTMLInputElement
-
-  public flags: Form.FieldFlags
+  private _flags: Form.FieldFlags
   = { pristine: false
     , dirty: false
     , changed: false
@@ -21,29 +15,104 @@ export default class Field {
     , errors: []
     }
 
+  public value: any
+  public name: string
+  public scope?: string
+  public rules: NormalizedRule[]
+  public el: Element | HTMLInputElement
+
   constructor (options: Form.FieldItem) {
     this.el = options.el
     this._vm = options.vm
     this.name = options.name
     this.value = options.value
     this.scope = options.scope
-    this.flags = this.createFlags()
     this.rules = this.mapRules(options.rules)
     this.initialValue = options.value
 
     this.init(options)
   }
 
-  get validator (): any {
-    if (!this._vm || !this._vm.$validator) return { validate: () => {} } 
+  get validate (): any {
+    if (!this._vm || !this._vm.$validator) return () => []
 
-    return this._vm.$validator
+    return this._vm.$validator.validate.bind(this._vm.$validator)
   }
 
   get watch (): any {
     if (!this._vm || !this._vm.$validator) return
 
     return this._vm.$watch.bind(this._vm)
+  }
+
+  get flags () {
+    return this._flags
+  }
+
+  get errors () {
+    return this._flags.errors
+  }
+
+  get error () {
+    return this._flags.errors[0] || ''
+  }
+
+  setFlag (flag: keyof Form.FieldFlags, value: boolean | string[]) {
+    if (!Object.keys(this._flags).includes(flag)) return
+
+    this._flags[flag] = value 
+  }
+
+  init (options: Form.FieldItem): void {
+    if (process.env.NODE_ENV !== 'production' && !this.name)
+      console.warn('CeeValidate: A field declaration is missing a "name" attribute')
+
+    this.initFlags()
+    this.addValueListeners()
+  }
+
+  // This method will initialize/reset the field _flags.
+  initFlags () {
+    const flagNames = Object.keys(this._flags) as [keyof Form.FieldFlags]
+    const defaultFlags: Form.FieldFlags =
+      { pristine: !this.value
+      , dirty: !!this.value
+      , touched: false
+      , changed: false
+      , valid: false
+      , errors: []
+      }
+
+    flagNames.forEach((flag: keyof Form.FieldFlags) => {
+      this._flags[flag] = defaultFlags[flag]
+    })
+  }
+
+  // In order to properly validate the field value we
+  // must be aware of whatever changes that happen to this
+  // value, when a change happes, we execute the proper
+  // validation method.
+  addValueListeners (): void {
+    if (!this.watch || !this.el) return
+
+    const onBlur = () => {
+      if (!this._flags.touched) this._flags.touched = true 
+      this.validate(this.name, this.scope)
+    }
+
+    const onInput = (value: any) => {
+      this.value = value
+      this._flags.changed = this.value !== this.initialValue
+      this.validate(this.name, this.scope)
+
+      if (!this._flags.dirty) {
+        this._flags.dirty = true
+        this._flags.pristine = false
+      }
+    }
+
+    this.el.addEventListener('focusout', onBlur.bind(this))
+    this.watch(this.scope ? `${this.scope}.${this.name}` : this.name, onInput.bind(this))
   }
 
   // Rule example: "required|date_format:DD/MM/YYY|between:10,30"
@@ -66,52 +135,8 @@ export default class Field {
       : []
   }
 
-  init (options: Form.FieldItem): void {
-    if (process.env.NODE_ENV !== 'production' && !this.name)
-      console.warn('CeeValidate: A field declaration is missing a "name" attribute')
-
-    this.addValueListeners()
-  }
-
-  // This method will initialize/reset the field flags.
-  createFlags (): Form.FieldFlags {
-    return {
-      pristine: !this.value,
-      dirty: !!this.value,
-      touched: false,
-      changed: false,
-      valid: false,
-      errors: []
-    }
-  }
-
-  // In order to properly validate the field value we
-  // must be aware of whatever changes that happen to this
-  // value, when a change happes, we execute the proper
-  // validation method.
-  addValueListeners (): void {
-    if (!this.watch || !this.el) return
-
-    const onBlur = () => { this.flags.touched = true }
-
-    const onInput = (value: any) => {
-      this.value = value
-      this.flags.changed = this.value !== this.initialValue
-      this.flags.errors = this.validator.validate(this)
-      this.flags.valid = !this.flags.errors.length
-
-      if (!this.flags.dirty) {
-        this.flags.dirty = true
-        this.flags.pristine = false
-      }
-    }
-
-    this.el.addEventListener('focusout', onBlur.bind(this), { once: true })
-    this.watch(this.scope ? `${this.scope}.${this.name}` : this.name, onInput.bind(this))
-  }
-
   reset () {
     this.value = this.initialValue
-    this.flags = this.createFlags()
+    this.initFlags()
   }
 }

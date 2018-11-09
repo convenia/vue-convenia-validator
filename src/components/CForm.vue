@@ -28,9 +28,9 @@
               class="field"
               :name="field.name"
               :key="field.name"
-              :validation="getValidationMsg(field.name)"
-              v-bind="field"
+              :validation="getValidationMsg(field)"
               :value="formData[field.name]"
+              v-bind="field"
               @input="formData[field.name] = $event"
             />
           </template>
@@ -39,7 +39,10 @@
 
       <div class="actions">
         <slot name="actions">
-          <c-button primary class="action" @click.stop.prevent="$validator.validateAll()">
+          <c-button error class="action" @click.stop="$validator.reset()">
+            Reset
+          </c-button>
+          <c-button primary class="action" @click.stop="$validator.validateAll()">
             Salvar
           </c-button>
         </slot>
@@ -63,9 +66,12 @@ export default class CForm extends Mixins(FormValidator) {
 
   private formData: { [name: string]: any } = { }
 
-  getValidationMsg (field : Form.FieldTemplate): string {
-    return /* this.$errors.has(field.name) */ true
-      ? field.validationMsg /* || this.$errors.first(field.name) */
+  getValidationMsg (fieldDef: Form.FieldTemplate): string {
+    const field = this.$validator.fields.get(fieldDef.name)
+    if (!field) return ''
+
+    return field.errors.length
+      ? fieldDef.validationMsg || field.error
       : ''
   }
 
@@ -93,7 +99,7 @@ export default class CForm extends Mixins(FormValidator) {
        , "value": ""
        }]
 
-    this.$validator.init({ formData: this.fields, test })
+    this.$validator.init({ formData: this.fields })
 
     this.formData = this.fields.reduce((acc, field) => ({
       ...acc,
@@ -114,7 +120,9 @@ export default class CForm extends Mixins(FormValidator) {
 
   & > .fields {
 
-    & > .field:not(:last-child) { margin-bottom: 30px; }
+    & > .field:not(:last-child):not(.-validation) { margin-bottom: 30px; }
+
+    & > .field.-validation { margin-bottom: 45px; }
   }
 
   & > .actions {
