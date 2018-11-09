@@ -2,6 +2,9 @@ declare namespace Form {
   export type ValidationRules = string | Array<string> | { [rule: string]: any } | undefined
   export type FieldTemplate = InputField | SelectField
 
+  export type ScopedTemplate = { [scope: string]: Form.FieldTemplate[] }
+  export type FormTemplate = ScopedTemplate | Form.FieldTemplate[]
+
   export interface InputField {
     type: string
     name: string
@@ -33,5 +36,6 @@ declare namespace Form {
     touched: boolean
     changed: boolean
     valid: boolean
+    errors: string[]
   }
 }

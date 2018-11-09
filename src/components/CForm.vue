@@ -39,7 +39,7 @@
 
       <div class="actions">
         <slot name="actions">
-          <c-button primary class="action" @click.stop.prevent="submit">
+          <c-button primary class="action" @click.stop.prevent="$validator.validateAll()">
             Salvar
           </c-button>
         </slot>
@@ -60,9 +60,6 @@ export default class CForm extends Mixins(FormValidator) {
   @Prop(Array) fields!: Form.FieldTemplate[]
   @Prop(Boolean) disabled: boolean
   @Prop(Boolean) loading: boolean
-
-  @Watch('$validations', { deep: true })
-  onValidation (val) { console.log('CForm.validations: ', this.$validations) }
 
   private formData: { [name: string]: any } = { }
 
@@ -96,7 +93,7 @@ export default class CForm extends Mixins(FormValidator) {
        , "value": ""
        }]
 
-    this.$validator.init({ formData: this.fields })
+    this.$validator.init({ formData: this.fields, test })
 
     this.formData = this.fields.reduce((acc, field) => ({
       ...acc,

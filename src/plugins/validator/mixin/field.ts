@@ -4,6 +4,7 @@ type NormalizedRule = { rule: string, args?: any }
 
 export default class Field {
   private _vm: FormValidator
+  private initialValue: string
 
   public value: any
   public name: string
@@ -11,14 +12,13 @@ export default class Field {
   public rules?: NormalizedRule[]
   public el: Element | HTMLInputElement
 
-  private initialValue: string
-
-  flags: Form.FieldFlags
+  public flags: Form.FieldFlags
   = { pristine: false
     , dirty: false
     , changed: false
     , touched: false
     , valid: false
+    , errors: []
     }
 
   constructor (options: Form.FieldItem) {
@@ -67,9 +67,8 @@ export default class Field {
   }
 
   init (options: Form.FieldItem): void {
-    if (process.env.NODE_ENV !== 'production' && !this.name) {
-      console.warn('A field declaration is missing a "name" attribute')
-    }
+    if (process.env.NODE_ENV !== 'production' && !this.name)
+      console.warn('CeeValidate: A field declaration is missing a "name" attribute')
 
     this.addValueListeners()
   }
@@ -81,7 +80,8 @@ export default class Field {
       dirty: !!this.value,
       touched: false,
       changed: false,
-      valid: false
+      valid: false,
+      errors: []
     }
   }
 
@@ -95,18 +95,23 @@ export default class Field {
     const onBlur = () => { this.flags.touched = true }
 
     const onInput = (value: any) => {
+      this.value = value
+      this.flags.changed = this.value !== this.initialValue
+      this.flags.errors = this.validator.validate(this)
+      this.flags.valid = !this.flags.errors.length
+
       if (!this.flags.dirty) {
         this.flags.dirty = true
         this.flags.pristine = false
       }
-
-      this.value = value
-      this.flags.changed = this.value !== this.initialValue
-      this.flags.valid = this.validator.validate(this)
     }
-
 
     this.el.addEventListener('focusout', onBlur.bind(this), { once: true })
     this.watch(this.scope ? `${this.scope}.${this.name}` : this.name, onInput.bind(this))
+  }
+
+  reset () {
+    this.value = this.initialValue
+    this.flags = this.createFlags()
   }
 }

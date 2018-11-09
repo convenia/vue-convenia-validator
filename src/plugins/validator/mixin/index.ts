@@ -1,7 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
+import { ComponentOptions } from 'vue';
 
-import FieldBag from './fieldBag'
-import ErrorBag from './errorBag'
 import ScopedValidator from './scopedValidator'
 
 @Component

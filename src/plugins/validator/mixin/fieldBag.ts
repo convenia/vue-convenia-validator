@@ -7,6 +7,12 @@ export default class FieldBag {
     this._items = items || []
   }
 
+  get (field: string, scope?: string): Field | undefined {
+    return this._items.find((item: Field) => scope
+      ? item.name === field && item.scope === scope
+      : item.name === field)
+  }
+
   /**
    * Returns all fields registered in the FieldBag
    * @param scope - If present, returns all the fields from that scope

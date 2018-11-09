@@ -1,54 +1,28 @@
 import { Vue as VueComponent } from 'vue-property-decorator'
 
 import Field from './field'
-import ErrorBag from './errorBag'
 import FieldBag from './fieldBag'
 import * as rules from '../rules'
-
-type ScopedTemplate = { [scope: string]: Form.FieldTemplate[] }
-type FormTemplate = ScopedTemplate | Form.FieldTemplate[]
 
 export default class ScopedValidator {
   private _vm: VueComponent
 
   public fields: FieldBag
-  public errors: ErrorBag
   public scopes: string[] = []
   public validations: object = {}
 
   constructor (vm: VueComponent) {
     this._vm = vm
-
     this.fields = new FieldBag()
-    this.errors = new ErrorBag()
 
     if (vm.$options.validation) this.init(vm.$options.validation)
   }
 
-  getValidations () {
-    const mapFlags = (scope?: string) => ({
-      errors: this.errors.all(scope)
-        .reduce((acc, error) => ({ ...acc, [error.field]: error.message }), {}),
-
-      fields: this.fields.all(scope)
-        .reduce((acc, field: Field) => ({ ...acc, [field.name]: field.flags }), {}) 
-    })
-
-    const mapFormScopes = (acc: object, scope: string) => ({
-      ...acc,
-      [scope]: mapFlags(scope)
-    })
-
-    this.validations = this.scopes.length > 1
-      ? this.scopes.reduce(mapFormScopes, this.validations)
-      : mapFlags()
-  }
-
-  init (template: FormTemplate): void {
+  init (template: Form.FormTemplate): void {
     this._vm.$nextTick(this.initFields.bind(this, template))
   }
 
-  initFields (template: FormTemplate): void {
+  initFields (template: Form.FormTemplate): void {
     const mapFields = (fieldTemplate: Form.FieldTemplate, scope?: string): Field => {
       const fieldEl = this.getFieldEl(fieldTemplate)
       const fieldOptions = {
@@ -63,7 +37,7 @@ export default class ScopedValidator {
       return new Field(fieldOptions)
     }
 
-    const mapScopes = (scopes: ScopedTemplate): Field[] => {
+    const mapScopes = (scopes: Form.ScopedTemplate): Field[] => {
       const scopedFields = Object.keys(scopes).map((scope) => {
         return scopes[scope].map(field => mapFields(field, scope))
       })
@@ -77,7 +51,23 @@ export default class ScopedValidator {
 
     this.scopes = Array.isArray(template) ? [] : Object.keys(template)
     this.fields.push(fields)
-    this.getValidations()
+    this.validations = this.initValidations()
+  }
+
+  initValidations () {
+    const mapFlags = (scope?: string) => ({
+      fields: this.fields.all(scope)
+        .reduce((acc, field: Field) => ({ ...acc, [field.name]: field.flags }), {}) 
+    })
+
+    const mapFormScopes = (acc: object, scope: string) => ({
+      ...acc,
+      [scope]: mapFlags(scope)
+    })
+
+    return this.scopes.length > 1
+      ? this.scopes.reduce(mapFormScopes, { })
+      : mapFlags()
   }
 
   getFieldEl (field: Form.FieldTemplate, scope?: string): Element {
@@ -87,7 +77,7 @@ export default class ScopedValidator {
 
     const fields: NodeList = this._vm.$el.querySelectorAll(fieldQuery)
 
-    if (!fields.length)
+    if (process.env.NODE_ENV !== 'production' && !fields.length)
       console.warn(`CeeValidate: Field "${field.name}" could not be found in the DOM`)
 
     return <Element>fields[0]
@@ -99,29 +89,23 @@ export default class ScopedValidator {
    * constructor.
    */
 
-  validate (field: Field): boolean {
-    if (!field.rules || !(field.rules || []).length) return true
+  validate (field: Field): Array<string> {
+    if (!field.rules || !(field.rules || []).length) return []
 
-    const result = field.rules.map(({ rule: name }) => {
-      const valid = rules[name].validate(field.value)
-      const message = rules[name].message
-
-      if (!valid)
-        this.errors.push({ field: field.name, scope: field.scope, message })
-      else
-        this.errors.remove(field.name, field.scope)
-
-      return valid
-    })
-
-    return result.every((passed: boolean) => passed)
+    return field.rules
+      .map(({ rule: name }) => !rules[name].validate(field.value) && rules[name].message)
+      .filter((message: string) => !!message)
   }
 
-  validateAll () { }
+  validateAll (scope?: string) {
+    this.fields.all(scope).forEach((field: Field) => field.validate())
+  }
 
   attach (fieldOpts: Form.FieldItem) { }
 
   detach () { }
 
-  reset () { }
+  reset (scope?: string) {
+    this.fields.all(scope).forEach((field: Field) => field.reset())
+  }
 }
