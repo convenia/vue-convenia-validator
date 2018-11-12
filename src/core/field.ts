@@ -1,24 +1,22 @@
 import FormValidator from '../index'
 
-type NormalizedRule = { rule: string, args?: any }
-
 export default class Field {
   private _vm: FormValidator
   private initialValue: string
 
-  private _flags: Form.FieldFlags
-  = { pristine: false
-    , dirty: false
-    , changed: false
-    , touched: false
-    , valid: false
-    , errors: []
-    }
+  private _flags: Form.FieldFlags = {
+    pristine: false,
+    dirty: false,
+    changed: false,
+    touched: false,
+    valid: false,
+    errors: []
+  }
 
   public value: any
   public name: string
   public scope?: string
-  public rules: NormalizedRule[]
+  public rules: Form.NormalizedRule[]
   public el: Element | HTMLInputElement
 
   constructor (options: Form.FieldItem) {
@@ -74,14 +72,14 @@ export default class Field {
   // This method will initialize/reset the field _flags.
   initFlags () {
     const flagNames = Object.keys(this._flags) as [keyof Form.FieldFlags]
-    const defaultFlags: Form.FieldFlags =
-      { pristine: !this.value
-      , dirty: !!this.value
-      , touched: false
-      , changed: false
-      , valid: false
-      , errors: []
-      }
+    const defaultFlags: Form.FieldFlags = {
+      pristine: !this.value,
+      dirty: !!this.value,
+      touched: false,
+      changed: false,
+      valid: false,
+      errors: []
+    }
 
     flagNames.forEach((flag: keyof Form.FieldFlags) => {
       this._flags[flag] = defaultFlags[flag]
@@ -116,15 +114,15 @@ export default class Field {
   }
 
   // Rule example: "required|date_format:DD/MM/YYY|between:10,30"
-  mapRules (rules: Form.ValidationRules): Array<NormalizedRule> {
+  mapRules (rules: Form.ValidationRules): Array<Form.NormalizedRule> {
     const stringToRules = (ruleDef: string) => ({
-      rule: ruleDef.split(':')[0],
+      ruleName: ruleDef.split(':')[0],
       args: ruleDef.split(':')[1] && ruleDef.split(':')[1].split(',')
     })
 
     const objToRules = (rulesObj: { [rule: string]: string }) =>
       Object.keys(rulesObj).map(ruleName => ({
-        rule: ruleName,
+        ruleName,
         args: rulesObj[ruleName]
       }))
 

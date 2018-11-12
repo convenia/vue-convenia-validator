@@ -2,6 +2,7 @@ import { Component, Vue } from 'vue-property-decorator'
 
 import ScopedValidator from './core/scopedValidator'
 
+// eslint-disable
 @Component
 export default class FormValidator extends Vue {
   public $validator: ScopedValidator

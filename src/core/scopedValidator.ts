@@ -2,7 +2,14 @@ import { Vue as VueComponent } from 'vue-property-decorator'
 
 import Field from './field'
 import FieldBag from './fieldBag'
-import * as rules from '../rules'
+
+const rules: { [ruleName: string]: RuleDefinition } = require('../rules')
+
+type RuleDefinition = {
+  validate: (value: any, args?: any) => boolean,
+  message: string
+}
+
 
 export default class ScopedValidator {
   private _vm: VueComponent
@@ -83,14 +90,21 @@ export default class ScopedValidator {
     return <Element>fields[0]
   }
 
-  validate (fieldName: string, scope?: string): void {
+  validate (fieldName: string, scope?: string) {
     const field = this.fields.get(fieldName, scope)
 
     if (!field || !(field.rules || []).length) return
 
-    const fieldErrors = field.rules
-      .map(({ rule: name }) => !rules[name].validate(field.value) && rules[name].message)
-      .filter((message: string) => !!message)
+    const mapErrors = (rule: Form.NormalizedRule): string => {
+      const hasError = !rules[rule.ruleName].validate(field.value, rule.args)
+      const errorMessage = rules[rule.ruleName].message
+
+      return hasError ? errorMessage : ''
+    }
+
+    const fieldErrors: string[] = field.rules
+      .map(mapErrors)
+      .filter(message => !!message)
 
     field.setFlag('errors', fieldErrors)
     field.setFlag('valid', !fieldErrors.length)
