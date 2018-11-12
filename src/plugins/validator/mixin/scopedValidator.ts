@@ -47,7 +47,7 @@ export default class ScopedValidator {
 
     const fields: Field[] = Array.isArray(template)
       ? template.map(field => mapFields(field))
-      : (this.scopes = Object.keys(template)) && mapScopes(template) 
+      : (this.scopes = Object.keys(template)) && mapScopes(template)
 
     this.scopes = Array.isArray(template) ? [] : Object.keys(template)
     this.fields.push(fields)
@@ -57,7 +57,7 @@ export default class ScopedValidator {
   initValidations () {
     const mapFlags = (scope?: string) => ({
       fields: this.fields.all(scope)
-        .reduce((acc, field: Field) => ({ ...acc, [field.name]: field.flags }), {}) 
+        .reduce((acc, field: Field) => ({ ...acc, [field.name]: field.flags }), {})
     })
 
     const mapFormScopes = (acc: object, scope: string) => ({

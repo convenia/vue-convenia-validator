@@ -1,28 +1,27 @@
 declare namespace Form {
-  export type ValidationRules = string | Array<string> | { [rule: string]: any } | undefined
-  export type FieldTemplate = InputField | SelectField
-
+  export type ValidationRules = string | Array<string> | { [rule: string]: any }
   export type ScopedTemplate = { [scope: string]: Form.FieldTemplate[] }
   export type FormTemplate = ScopedTemplate | Form.FieldTemplate[]
 
-  export interface InputField {
+  export interface FieldTemplate {
     type: string
     name: string
     value: string
     label?: string
-    validation?: ValidationRules
-    validationMsg?: string
     placeholder?: string
+    validationMsg?: string
+    validation?: ValidationRules
   }
 
-  export interface SelectField extends InputField {
-    displayBy?: string
-    trackBy?: string
-    options: Array<string> | Array<{ label: string, value: any }>
+  export type SelectFieldOption = string | { label: string, value: any }
+  export interface SelectField extends FieldTemplate {
+    displayBy?: keyof SelectFieldOption
+    trackBy?: keyof SelectFieldOption
+    options: Array<SelectFieldOption>
   }
 
   export interface FieldItem {
-    vm: any 
+    vm: any
     value: any
     name: string
     scope?: string

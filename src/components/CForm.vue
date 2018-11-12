@@ -56,7 +56,6 @@ import { Vue, Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 
 import FormValidator from '@/plugins/validator'
 
-type SelectFieldOption = string | { label: string, value: any }
 
 @Component
 export default class CForm extends Mixins(FormValidator) {
@@ -75,8 +74,8 @@ export default class CForm extends Mixins(FormValidator) {
       : ''
   }
 
-  getSelectValue (field: Form.SelectField): SelectFieldOption {
-    const options = <SelectFieldOption[]>field.options
+  getSelectValue (field: Form.SelectField): Form.SelectFieldOption {
+    const options = <Form.SelectFieldOption[]>field.options
 
     return options.find(option => {
       return field.trackBy

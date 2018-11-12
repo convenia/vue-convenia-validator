@@ -27,7 +27,7 @@ export default class Field {
     this.name = options.name
     this.value = options.value
     this.scope = options.scope
-    this.rules = this.mapRules(options.rules)
+    this.rules = this.mapRules(options.rules || '')
     this.initialValue = options.value
 
     this.init(options)
@@ -60,7 +60,7 @@ export default class Field {
   setFlag (flag: keyof Form.FieldFlags, value: boolean | string[]) {
     if (!Object.keys(this._flags).includes(flag)) return
 
-    this._flags[flag] = value 
+    this._flags[flag] = value
   }
 
   init (options: Form.FieldItem): void {
@@ -96,7 +96,7 @@ export default class Field {
     if (!this.watch || !this.el) return
 
     const onBlur = () => {
-      if (!this._flags.touched) this._flags.touched = true 
+      if (!this._flags.touched) this._flags.touched = true
       this.validate(this.name, this.scope)
     }
 
@@ -122,7 +122,7 @@ export default class Field {
       args: ruleDef.split(':')[1] && ruleDef.split(':')[1].split(',')
     })
 
-    const objToRules = (rulesObj: { [rule: string]: string }) => 
+    const objToRules = (rulesObj: { [rule: string]: string }) =>
       Object.keys(rulesObj).map(ruleName => ({
         rule: ruleName,
         args: rulesObj[ruleName]
