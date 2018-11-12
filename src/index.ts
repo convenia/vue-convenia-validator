@@ -1,6 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 
-import ScopedValidator from './mixin/scopedValidator'
+import ScopedValidator from './core/scopedValidator'
 
 @Component
 export default class FormValidator extends Vue {

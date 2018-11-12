@@ -1,31 +1,51 @@
 {
-  "name": "convenia-validator-ex",
+  "name": "cee-validate",
   "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+  "description": "A model-based form validation library for vue inspired by vuelidate and vee-validate.",
+  "module": "dist/cee-validate.es.js",
+  "main": "dist/cee-validate.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": "https://github.com/iErik/cee-validate",
+  "license": "MIT",
+  "author": {
+    "name": "Erik Isidore",
+    "email": "ericssonico@protonmail.ch"
   },
-  "dependencies": {
-    "convenia-components": "git+ssh://git@gitlab.com:convenia/frontend/convenia-components.git#qa/erik",
-    "vue": "^2.5.17",
-    "vue-class-component": "^6.0.0",
-    "vue-property-decorator": "^7.0.0"
+  "bugs": {
+    "url": "https://github.com/iErik/cee-validate/issues"
+  },
+  "keywords": [
+    "validation",
+    "validator",
+    "convenia",
+    "VueJS",
+    "form",
+    "Vue"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -cw"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.1.1",
-    "@vue/cli-plugin-eslint": "^3.1.1",
-    "@vue/cli-plugin-typescript": "^3.1.1",
-    "@vue/cli-service": "^3.1.1",
-    "@vue/eslint-config-standard": "^4.0.0",
-    "@vue/eslint-config-typescript": "^3.1.0",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^5.8.0",
-    "eslint-plugin-vue": "^5.0.0-0",
-    "node-sass": "^4.9.0",
-    "sass-loader": "^7.0.1",
-    "typescript": "^3.0.0",
-    "vue-template-compiler": "^2.5.17"
+    "eslint": "^5.9.0",
+    "npm-run-all": "^4.1.3",
+    "rimraf": "^2.6.2",
+    "rollup": "^0.67.1",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-sourcemaps": "^0.4.2",
+    "rollup-plugin-typescript2": "^0.18.0",
+    "typescript": "^3.1.6",
+    "uglify-es": "^3.3.9",
+    "vue": "^2.5.17"
+  },
+  "peerDependencies": {
+    "vue": "^2.5.17"
+  },
+  "dependencies": {
+    "vue-class-component": "^6.3.2",
+    "vue-property-decorator": "^7.2.0"
   }
 }
