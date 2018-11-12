@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "es6",
+    "module": "esnext",
     "strict": true,
     "outDir": "./dist",
     "declaration": true,
-    "declarationDir": "./dist",
+    "declarationDir": "./dist/types",
+    "typeRoots": [ "node_modules/@types" ],
     "importHelpers": true,
     "strictPropertyInitialization": false,
     "moduleResolution": "node",
@@ -15,16 +16,14 @@
     "sourceMap": true,
     "baseUrl": ".",
     "lib": [
+      "es5",
+      "esnext",
       "es2015",
       "es2016",
       "es2017",
       "dom"
     ]
   },
-  "include": [
-    "src/**/*.ts",
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": [ "src" ],
+  "exclude": [ "node_modules" ]
 }

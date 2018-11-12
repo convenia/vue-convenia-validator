@@ -3,7 +3,7 @@ import { Vue as VueComponent } from 'vue-property-decorator'
 import Field from './field'
 import FieldBag from './fieldBag'
 
-const rules: { [ruleName: string]: RuleDefinition } = require('../rules')
+const rules: { [ruleName: string]: RuleDefinition } = require('../rules/index.ts')
 
 type RuleDefinition = {
   validate: (value: any, args?: any) => boolean,
