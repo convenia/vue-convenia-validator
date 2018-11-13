@@ -101,7 +101,7 @@ export default class ScopedValidator {
 
     const mapErrors = ({ ruleName, args: ruleArgs }: NormalizedRule): string => {
       const rule: ValidationRule = RuleContainer.getRule(ruleName)
-      const hasError = rule.validate(field.value, ruleArgs)
+      const hasError = !rule.validate(field.value, ruleArgs)
       const errorMessage = rule.message
 
       return hasError ? errorMessage : ''
