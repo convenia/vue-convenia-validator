@@ -1,10 +1,13 @@
 declare namespace Form {
-  export type ValidationRules = string | Array<string> | { [rule: string]: any }
+  export type ValidationRules = string | Array<string> | { [rule: string]: any } | undefined
+  export type NormalizedRule = { ruleName: string, args?: any }
+  export type ValidationRule = {
+    validate: (value: any, ...args: any) => boolean
+    message: string
+  }
 
   export type ScopedTemplate = { [scope: string]: Form.FieldTemplate[] }
   export type FormTemplate = ScopedTemplate | Form.FieldTemplate[]
-
-  export type NormalizedRule = { ruleName: string, args?: any }
 
   export interface FieldTemplate {
     type: string

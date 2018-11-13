@@ -1,6 +1,7 @@
 import typescript from 'rollup-plugin-typescript2'
 import commonjs from 'rollup-plugin-commonjs'
 import resolve from 'rollup-plugin-node-resolve'
+import sourceMaps from 'rollup-plugin-sourcemaps'
 
 import pkg from './package.json'
 
@@ -9,9 +10,11 @@ export default {
   output:
     [{ file: pkg.main
      , name: pkg.main
-     , format: 'cjs'
+     , sourcemap: true
+     , format: 'umd'
      },
      { file: pkg.module
+      , sourcemap: true
      , format: 'es'
     }],
 
@@ -23,6 +26,7 @@ export default {
   plugins:
     [ typescript({ useTsconfigDeclarationDir: true })
     , commonjs()
-    , resolve({ jsnext: true })
+    , resolve()
+    , sourceMaps()
     ]
 }
