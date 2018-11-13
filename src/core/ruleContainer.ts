@@ -1,16 +1,18 @@
-/// <reference path="./types.ts" />
-const RULES: { [ruleName: string]: Form.ValidationRule } = {}
+import { ValidationRule } from '../types'
+
+
+const RULES: { [ruleName: string]: ValidationRule } = {}
 
 export default class RuleContainer {
-  static get rules (): { [ruleName: string]: Form.ValidationRule } {
+  static get rules (): { [ruleName: string]: ValidationRule } {
     return RULES
   }
 
-  static getRule (ruleName: string): Form.ValidationRule {
+  static getRule (ruleName: string): ValidationRule {
     return RULES[ruleName]
   }
 
-  static add (ruleName: string, rule: Form.ValidationRule) {
+  static add (ruleName: string, rule: ValidationRule) {
     RULES[ruleName] = rule
   }
 

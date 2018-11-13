@@ -1,11 +1,18 @@
-/// <reference path="./types.ts" />
 import FormValidator from '../index'
+
+import {
+  FieldItem,
+  FieldFlags,
+  NormalizedRule,
+  ValidationRules
+} from '../types'
+
 
 export default class Field {
   private _vm: FormValidator
   private initialValue: string
 
-  private _flags: Form.FieldFlags = {
+  private _flags: FieldFlags = {
     pristine: false,
     dirty: false,
     changed: false,
@@ -17,10 +24,10 @@ export default class Field {
   public value: any
   public name: string
   public scope?: string
-  public rules: Form.NormalizedRule[]
+  public rules: NormalizedRule[]
   public el: Element | HTMLInputElement
 
-  constructor (options: Form.FieldItem) {
+  constructor (options: FieldItem) {
     this.el = options.el
     this._vm = options.vm
     this.name = options.name
@@ -56,13 +63,13 @@ export default class Field {
     return this._flags.errors[0] || ''
   }
 
-  setFlag (flag: keyof Form.FieldFlags, value: boolean | string[]) {
+  setFlag (flag: keyof FieldFlags, value: boolean | string[]) {
     if (!Object.keys(this._flags).includes(flag)) return
 
     this._flags[flag] = value
   }
 
-  init (options: Form.FieldItem): void {
+  init (options: FieldItem): void {
     if (process.env.NODE_ENV !== 'production' && !this.name)
       console.warn('CeeValidate: A field declaration is missing a "name" attribute')
 
@@ -72,8 +79,8 @@ export default class Field {
 
   // This method will initialize/reset the field _flags.
   initFlags () {
-    const flagNames = Object.keys(this._flags) as [keyof Form.FieldFlags]
-    const defaultFlags: Form.FieldFlags = {
+    const flagNames = Object.keys(this._flags) as [keyof FieldFlags]
+    const defaultFlags: FieldFlags = {
       pristine: !this.value,
       dirty: !!this.value,
       touched: false,
@@ -82,7 +89,7 @@ export default class Field {
       errors: []
     }
 
-    flagNames.forEach((flag: keyof Form.FieldFlags) => {
+    flagNames.forEach((flag: keyof FieldFlags) => {
       this._flags[flag] = defaultFlags[flag]
     })
   }
@@ -115,7 +122,7 @@ export default class Field {
   }
 
   // Rule example: "required|date_format:DD/MM/YYY|between:10,30"
-  mapRules (rules: Form.ValidationRules): Array<Form.NormalizedRule> {
+  mapRules (rules: ValidationRules): Array<NormalizedRule> {
     const stringToRules = (ruleDef: string) => ({
       ruleName: ruleDef.split(':')[0],
       args: ruleDef.split(':')[1] && ruleDef.split(':')[1].split(',')

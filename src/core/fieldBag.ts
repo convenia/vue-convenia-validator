@@ -1,5 +1,6 @@
 import Field from './field'
 
+
 export default class FieldBag {
   private _items: Field[]
 

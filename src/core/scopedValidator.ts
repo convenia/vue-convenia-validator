@@ -1,4 +1,3 @@
-/// <reference path="./types.ts" />
 import { Vue as VueComponent } from 'vue-property-decorator'
 
 import Field from './field'
@@ -6,6 +5,15 @@ import FieldBag from './fieldBag'
 
 import RuleContainer from './ruleContainer'
 import '../rules'
+
+import {
+  FormTemplate,
+  FieldTemplate,
+  ScopedTemplate,
+  NormalizedRule,
+  ValidationRule
+} from '../types'
+
 
 export default class ScopedValidator {
   private _vm: VueComponent
@@ -21,12 +29,12 @@ export default class ScopedValidator {
     if (vm.$options.validation) this.init(vm.$options.validation)
   }
 
-  init (template: Form.FormTemplate): void {
+  init (template: FormTemplate): void {
     this._vm.$nextTick(this.initFields.bind(this, template))
   }
 
-  initFields (template: Form.FormTemplate): void {
-    const mapFields = (fieldTemplate: Form.FieldTemplate, scope?: string): Field => {
+  initFields (template: FormTemplate): void {
+    const mapFields = (fieldTemplate: FieldTemplate, scope?: string): Field => {
       const fieldEl = this.getFieldEl(fieldTemplate)
       const fieldOptions = {
         scope,
@@ -40,7 +48,7 @@ export default class ScopedValidator {
       return new Field(fieldOptions)
     }
 
-    const mapScopes = (scopes: Form.ScopedTemplate): Field[] => {
+    const mapScopes = (scopes: ScopedTemplate): Field[] => {
       const scopedFields = Object.keys(scopes).map((scope) => {
         return scopes[scope].map(field => mapFields(field, scope))
       })
@@ -73,7 +81,7 @@ export default class ScopedValidator {
       : mapFlags()
   }
 
-  getFieldEl (field: Form.FieldTemplate, scope?: string): Element {
+  getFieldEl (field: FieldTemplate, scope?: string): Element {
     const fieldQuery = scope
       ? `form[name="${scope}"] [name="${field.name}"]`
       : `[name="${field.name}"]`
@@ -91,8 +99,8 @@ export default class ScopedValidator {
 
     if (!field || !(field.rules || []).length) return
 
-    const mapErrors = ({ ruleName, args: ruleArgs }: Form.NormalizedRule): string => {
-      const rule : Form.ValidationRule = RuleContainer.getRule(ruleName)
+    const mapErrors = ({ ruleName, args: ruleArgs }: NormalizedRule): string => {
+      const rule: ValidationRule = RuleContainer.getRule(ruleName)
       const hasError = rule.validate(field.value, ruleArgs)
       const errorMessage = rule.message
 
@@ -117,7 +125,7 @@ export default class ScopedValidator {
     this.fields.all(scope).forEach((field: Field) => field.reset())
   }
 
-  attach (fieldOpts: Form.FieldItem) { }
+  attach () { }
 
   detach (field: string, scope?: string) { }
 }
