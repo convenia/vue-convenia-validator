@@ -1,3 +1,4 @@
+/// <reference path="./types.ts" />
 const RULES: { [ruleName: string]: Form.ValidationRule } = {}
 
 export default class RuleContainer {

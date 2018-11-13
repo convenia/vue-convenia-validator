@@ -1,3 +1,4 @@
+/// <reference path="./types.ts" />
 import { Vue as VueComponent } from 'vue-property-decorator'
 
 import Field from './field'

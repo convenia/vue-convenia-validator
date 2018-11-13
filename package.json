@@ -5,9 +5,7 @@
   "module": "dist/cee-validate.es5.js",
   "main": "dist/cee-validate.umd.js",
   "typings": "dist/types/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "files": [ "dist" ],
   "repository": "https://github.com/iErik/cee-validate",
   "license": "MIT",
   "author": {
@@ -16,6 +14,9 @@
   },
   "bugs": {
     "url": "https://github.com/iErik/cee-validate/issues"
+  },
+  "engines": {
+    "node": ">=6.0.0"
   },
   "keywords": [
     "validation",
@@ -27,7 +28,7 @@
   ],
   "scripts": {
     "clear": "rimraf dist",
-    "build": "rollup -c",
+    "build": "clear && rollup -c",
     "watch": "rollup -cw",
     "lint": "eslint --ext js,ts,vue ./src",
     "lint:fix": "eslint --fix --ext js,ts,vue ./src"

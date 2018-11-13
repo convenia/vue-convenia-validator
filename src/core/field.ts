@@ -1,3 +1,4 @@
+/// <reference path="./types.ts" />
 import FormValidator from '../index'
 
 export default class Field {
