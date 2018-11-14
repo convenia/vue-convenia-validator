@@ -1,3 +1,8 @@
+import dayjs from 'dayjs-ext'
+import customParseFormat from 'dayjs-ext/plugin/customParseFormat'
+
+dayjs.extend(customParseFormat)
+
 import RuleContainer from '../core/ruleContainer'
 
 /**
@@ -18,11 +23,13 @@ import RuleContainer from '../core/ruleContainer'
  */
 
 const rule = {
-  validate: (value: string | number, format?: string): boolean => {
-    console.log('date_format')
-    return true
+  validate: (value: string | number, format: string = 'DD/MM/YYYY'): boolean => {
+    const date = dayjs(value, <any>{ format })
+
+    console.log('date_format: ', date)
+    return date.isValid()
   },
-  message: ''
+  message: 'Data inválida.'
 }
 
 RuleContainer.add('date_format', rule)

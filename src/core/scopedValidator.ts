@@ -63,6 +63,8 @@ export default class ScopedValidator {
     this.scopes = Array.isArray(template) ? [] : Object.keys(template)
     this.fields.push(fields)
     this.validations = this.initValidations()
+
+    console.log('scopedValidator: ', this)
   }
 
   initValidations () {
@@ -91,6 +93,7 @@ export default class ScopedValidator {
     if (process.env.NODE_ENV !== 'production' && !fields.length)
       console.warn(`CeeValidate: Field "${field.name}" could not be found in the DOM`)
 
+    // Return the first element found
     return <Element>fields[0]
   }
 
@@ -99,8 +102,12 @@ export default class ScopedValidator {
 
     if (!field || !(field.rules || []).length) return
 
+    console.log('field.rules: ', field.rules)
+
     const mapErrors = ({ ruleName, args: ruleArgs }: NormalizedRule): string => {
+      console.log('ruleName: ', ruleName)
       const rule: ValidationRule = RuleContainer.getRule(ruleName)
+      console.log('rule: ', rule)
       const hasError = !rule.validate(field.value, ruleArgs)
       const errorMessage = rule.message
 

@@ -6,8 +6,7 @@
   "main": "dist/cee-validate.umd.js",
   "types": "dist/types/index.d.ts",
   "files": [
-    "dist",
-    "types"
+    "dist"
   ],
   "repository": "https://github.com/iErik/cee-validate",
   "license": "MIT",
@@ -54,6 +53,7 @@
     "vue": "^2.5.17"
   },
   "dependencies": {
+    "dayjs-ext": "^2.0.2",
     "vue-class-component": "^6.3.2",
     "vue-property-decorator": "^7.2.0"
   }

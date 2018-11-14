@@ -128,16 +128,17 @@ export default class Field {
       args: ruleDef.split(':')[1] && ruleDef.split(':')[1].split(',')
     })
 
-    const objToRules = (rulesObj: { [rule: string]: string }) =>
+    const objToRules = (rulesObj: { [rule: string]: any }) =>
       Object.keys(rulesObj).map(ruleName => ({
         ruleName,
         args: rulesObj[ruleName]
       }))
 
-    return typeof rules === 'string'
+    // Please fix that
+    return typeof rules === 'string' && rules.length
       ? rules.split('|').map(stringToRules)
       : Array.isArray(rules) ? rules.map(stringToRules)
-      : rules && rules.constructor === Object ? objToRules(rules)
+      : rules && rules.constructor === Object ? objToRules(<object>rules)
       : []
   }
 
