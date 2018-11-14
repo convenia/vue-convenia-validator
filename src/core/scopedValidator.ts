@@ -63,11 +63,11 @@ export default class ScopedValidator {
     this.scopes = Array.isArray(template) ? [] : Object.keys(template)
     this.fields.push(fields)
     this.validations = this.initValidations()
-
-    console.log('scopedValidator: ', this)
+    //this.registerGetters()
   }
 
   initValidations () {
+    console.log('runnnning: ', this)
     const mapFlags = (scope?: string) => ({
       fields: this.fields.all(scope)
         .reduce((acc, field: Field) => ({ ...acc, [field.name]: field.flags }), {})
@@ -97,17 +97,26 @@ export default class ScopedValidator {
     return <Element>fields[0]
   }
 
+  /*
+  registerGetters () {
+    const Vue = this._vm.$options._base
+    const options = this._vm.$options
+
+    if (!options.computed) options.computed = { }
+
+    Vue.util.defineReactive(this, 'validations', this.validations)
+    options.computed['$validations'] = () => this.validations
+  }
+  */
+
   validate (fieldName: string, scope?: string): void {
     const field = this.fields.get(fieldName, scope)
 
     if (!field || !(field.rules || []).length) return
 
-    console.log('field.rules: ', field.rules)
 
     const mapErrors = ({ ruleName, args: ruleArgs }: NormalizedRule): string => {
-      console.log('ruleName: ', ruleName)
       const rule: ValidationRule = RuleContainer.getRule(ruleName)
-      console.log('rule: ', rule)
       const hasError = !rule.validate(field.value, ruleArgs)
       const errorMessage = rule.message
 

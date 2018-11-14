@@ -26,7 +26,6 @@ const rule = {
   validate: (value: string | number, format: string = 'DD/MM/YYYY'): boolean => {
     const date = dayjs(value, <any>{ format })
 
-    console.log('date_format: ', date)
     return date.isValid()
   },
   message: 'Data inválida.'

@@ -19,7 +19,6 @@ export default class FormValidator extends Vue {
     // Setup computed properties on the component
     if (!this.$options.computed) this.$options.computed = {}
 
-    // Mark getter as reactive
     Vue.util.defineReactive(this.$validator, 'validations', this.$validator.validations)
     this.$options.computed['$validations'] = () => this.$validator.validations
   }
