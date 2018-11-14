@@ -5,9 +5,6 @@ export type ValidationRule = {
   message: string
 }
 
-export type ScopedTemplate = { [scope: string]: FieldTemplate[] }
-export type FormTemplate = ScopedTemplate | FieldTemplate[]
-
 export interface FieldTemplate {
   type: string
   name: string
@@ -16,13 +13,6 @@ export interface FieldTemplate {
   placeholder?: string
   validationMsg?: string
   validation?: ValidationRules
-}
-
-export type SelectFieldOption = string | { label: string, value: any }
-export interface SelectField extends FieldTemplate {
-  displayBy?: keyof SelectFieldOption
-  trackBy?: keyof SelectFieldOption
-  options: Array<SelectFieldOption>
 }
 
 export interface FieldItem {

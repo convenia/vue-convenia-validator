@@ -7,13 +7,13 @@ import RuleContainer from './ruleContainer'
 import '../rules'
 
 import {
-  FormTemplate,
   FieldTemplate,
-  ScopedTemplate,
   NormalizedRule,
   ValidationRule
 } from '../types'
 
+export type ScopedTemplate = { [scope: string]: FieldTemplate[] }
+export type FormTemplate = ScopedTemplate | FieldTemplate[]
 
 export default class ScopedValidator {
   private _vm: VueComponent
