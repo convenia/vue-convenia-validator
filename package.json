@@ -5,7 +5,10 @@
   "module": "dist/cee-validate.es5.js",
   "main": "dist/cee-validate.umd.js",
   "types": "dist/types/index.d.ts",
-  "files": [ "dist", "types" ],
+  "files": [
+    "dist",
+    "types"
+  ],
   "repository": "https://github.com/iErik/cee-validate",
   "license": "MIT",
   "author": {
