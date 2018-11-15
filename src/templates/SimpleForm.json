@@ -87,7 +87,8 @@
   , "name": "birthday"
   , "label": "Data de nascimento"
   , "placeholder": "Data de nascimento"
-  , "validation": "required|date_format:DD/MM/YYYY"
+  , "mask": "##/##/####"
+  , "validation": "required|date_format"
   , "value": ""
   },
   { "type": "text"
