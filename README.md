@@ -120,14 +120,14 @@ export default {
   - [x] numeric - Check if all characters in a string are numbers.
   - [x] regex - Tests a RegExp on value.
   - [x] required - Checks if value isn't empty.
-  - [] dateBetween - Checks if date is in between two date values.
-  - [] dateBefore - Checks if given date comes before another date.
-  - [] dateAfter - Cheks if given date comes after another date.
-  - [] between - Checks if number is in between two values.
-  - [] email - Checks if value is a valid email address.
-  - [] url - Checks if value is a valid URL address.
-  - [] ip - Checks if value is a valid IP address.
-  - [] credit card - Checks if value is a valid credit card number.
+  - [ ] dateBetween - Checks if date is in between two date values.
+  - [ ] dateBefore - Checks if given date comes before another date.
+  - [ ] dateAfter - Cheks if given date comes after another date.
+  - [ ] between - Checks if number is in between two values.
+  - [ ] email - Checks if value is a valid email address.
+  - [ ] url - Checks if value is a valid URL address.
+  - [ ] ip - Checks if value is a valid IP address.
+  - [ ] credit card - Checks if value is a valid credit card number.
 
 - Implement unit tests
 - Improve project documentaion
