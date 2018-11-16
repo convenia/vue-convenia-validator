@@ -21,14 +21,16 @@ export default class ScopedValidator {
   public fields: FieldBag
   public scopes: string[] = []
   public validations: object = {}
+  private options: object = {}
 
-  constructor (vm: VueComponent) {
+  constructor (vm: VueComponent, options: object) {
     this._vm = vm
     this.fields = new FieldBag()
-
-    if (vm.$options.validation) this.init(vm.$options.validation)
+    this.options = options
+    console.log('scopedValidator.options: ', options)
   }
 
+  // Maybe this $nextTick isn't really necessary, we have to re-evaluate that
   init (template: FormTemplate): void {
     this._vm.$nextTick(this.initFields.bind(this, template))
   }
@@ -97,7 +99,6 @@ export default class ScopedValidator {
     return <Element>fields[0]
   }
 
-  /*
   registerGetters () {
     const Vue = this._vm.$options._base
     const options = this._vm.$options
@@ -107,7 +108,6 @@ export default class ScopedValidator {
     Vue.util.defineReactive(this, 'validations', this.validations)
     options.computed['$validations'] = () => this.validations
   }
-  */
 
   validate (fieldName: string, scope?: string): void {
     const field = this.fields.get(fieldName, scope)

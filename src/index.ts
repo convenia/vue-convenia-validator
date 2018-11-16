@@ -1,27 +1,16 @@
-import { Component, Vue } from 'vue-property-decorator'
+import FormValidator from './mixin'
 
-import ScopedValidator from './core/scopedValidator'
+const defaultConfig = { }
 
-// eslint-disable
-@Component
-export default class FormValidator extends Vue {
-  public $validator: ScopedValidator
-  public $validations: object
+export default {
 
-  // In the future we'll use this function to pass mixin options
-  // and make some checkings before instantiating the ScopedValidator
-  beforeCreate () {
-    // Get Vue constructor
-    const Vue = this.$options._base
+  install (Vue: any, options?: any) {
+    console.log('installing, LOL: ')
+    console.log('FormValidatorMixin: ', FormValidator)
+    console.log('this: ', this)
+    // We should merge the two
+    FormValidator.options = options || defaultConfig
 
-    this.$validator = new ScopedValidator(this)
-
-    // Setup computed properties on the component
-    if (!this.$options.computed) this.$options.computed = {}
-
-    Vue.util.defineReactive(this.$validator, 'validations', this.$validator.validations)
-    this.$options.computed['$validations'] = () => this.$validator.validations
+    Vue.mixin(FormValidator)
   }
-
-  // Implement beforeDestroy ()
 }

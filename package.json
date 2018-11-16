@@ -1,6 +1,6 @@
 {
   "name": "cee-validate",
-  "version": "0.1.14",
+  "version": "0.1.18-alpha.1",
   "description": "A model-based form validation library for vue inspired by vuelidate and vee-validate.",
   "module": "dist/cee-validate.es5.js",
   "main": "dist/cee-validate.umd.js",

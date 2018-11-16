@@ -1,4 +1,5 @@
-import FormValidator from '../index'
+import FormValidator from '../mixin'
+import { is } from '../utils'
 
 import {
   FieldItem,
@@ -6,6 +7,7 @@ import {
   NormalizedRule,
   ValidationRules
 } from '../types'
+import ScopedValidator from './scopedValidator';
 
 
 export default class Field {
@@ -40,9 +42,9 @@ export default class Field {
   }
 
   get validate (): any {
-    if (!this._vm || !this._vm.$validator) return () => []
+    if (!this._vm || !is(this._vm.$validator, 'ScopedValidator')) return () => []
 
-    return this._vm.$validator.validate.bind(this._vm.$validator)
+    return (<ScopedValidator>this._vm.$validator).validate.bind(this._vm.$validator)
   }
 
   get watch (): any {
