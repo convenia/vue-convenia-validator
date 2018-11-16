@@ -127,7 +127,7 @@ export default {
   - [ ] email - Checks if value is a valid email address.
   - [ ] url - Checks if value is a valid URL address.
   - [ ] ip - Checks if value is a valid IP address.
-  - [ ] credit card - Checks if value is a valid credit card number.
+  - [ ] creditCard - Checks if value is a valid credit card number.
 
 - Implement unit tests
 - Improve project documentaion
