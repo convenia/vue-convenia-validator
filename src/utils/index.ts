@@ -1,1 +1,2 @@
-export { default as is } from './is'
+export * from './fields'
+export * from './is'

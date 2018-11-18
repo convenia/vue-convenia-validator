@@ -129,7 +129,7 @@ export default {
   - [ ] ip - Checks if value is a valid IP address.
   - [ ] creditCard - Checks if value is a valid credit card number.
 
-- Implement unit tests
-- Improve project documentaion
-- Implement option to customize validation error messages
-- Implement vue directive
+- [ ] Implement unit tests
+- [ ] Improve project documentaion
+- [ ] Implement option to customize validation error messages
+- [ ] Implement vue directive

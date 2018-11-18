@@ -4,10 +4,10 @@
  * @param {String} constructor
  * @returns {Boolean}
  *
- * @author Victor Luiz Cavalcanti <vitorluizc@outlook.co,>
+ * @author Victor Luiz Cavalcanti <vitorluizc@outlook.com>
  */
 
-const is = (value: any, constructor: string): boolean => {
+export const is = (value: any, constructor: string): boolean => {
   return Object.prototype.toString.call(value) === `[object ${constructor}]`
 }
 
