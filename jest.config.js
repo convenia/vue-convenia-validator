@@ -1,7 +1,13 @@
 module.exports = {
   preset: 'ts-jest',
-  transform: { '.(ts|tsx)': 'ts-jest' },
-  testEnvironment: 'node',
-  moduleFileExtensions: [ 'ts', 'tsx', 'js' ],
-  verbose: true
+  testURL: 'http://localhost',
+  transform: { '.*\\.(vue)$': 'vue-jest', '.(ts|tsx)': 'ts-jest' },
+  moduleFileExtensions: [ 'ts', 'js', 'vue' ],
+  verbose: true,
+  globals: {
+    'ts-jest': {
+      isolatedModules: true,
+      diagnostics: { warOnly: true }
+    }
+  }
 }

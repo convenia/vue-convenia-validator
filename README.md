@@ -122,14 +122,14 @@ export default {
   - [x] required - Checks if value isn't empty.
   - [ ] dateBetween - Checks if date is in between two date values.
   - [ ] dateBefore - Checks if given date comes before another date.
-  - [ ] dateAfter - Cheks if given date comes after another date.
+  - [ ] dateAfter - Checks if given date comes after another date.
   - [ ] between - Checks if number is in between two values.
   - [ ] email - Checks if value is a valid email address.
   - [ ] url - Checks if value is a valid URL address.
   - [ ] ip - Checks if value is a valid IP address.
   - [ ] creditCard - Checks if value is a valid credit card number.
 
-- [ ] Implement unit tests
-- [ ] Improve project documentaion
+- [x] Implement unit tests
+- [ ] Improve project documentation
 - [ ] Implement option to customize validation error messages
-- [ ] Implement vue directive
+- [ ] Implement Vue directive
