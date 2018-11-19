@@ -14,7 +14,7 @@ import { ValidationRule } from '../types'
 
 const rule: ValidationRule = {
   validate: (value: string): boolean => {
-    return /^\s*([0-9a-zA-Z]*)\s*$/.test(value)
+    return !!value.trim() && /^([0-9a-zA-Z\s]*)?$/.test(value.trim())
   },
   message: 'Deve conter apenas letras e números'
 }

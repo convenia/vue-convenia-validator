@@ -13,7 +13,7 @@ import { ValidationRule } from '../types'
 
 const rule: ValidationRule = {
   validate: (value: string): boolean => {
-    return /^\s*([0-9]*)\s*$/.test(value)
+    return !!value.trim() && /^(\d+(\.\d+)?$)/.test(value.trim())
   },
   message: 'Deve conter apenas números.'
 }

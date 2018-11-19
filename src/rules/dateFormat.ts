@@ -1,5 +1,6 @@
 import RuleContainer from '../core/ruleContainer'
 import { ValidationRule } from '../types'
+import { is } from '../utils'
 
 import dayjs from 'dayjs-ext'
 import customParseFormat from 'dayjs-ext/plugin/customParseFormat'
@@ -25,7 +26,8 @@ dayjs.extend(customParseFormat)
 
 const rule: ValidationRule = {
   validate: (value: string | number, format: string = 'DD/MM/YYYY'): boolean => {
-    const date = dayjs(value, <any>{ format })
+    const options = is(value, 'String') ? { format } : { }
+    const date = dayjs(value, <any>options)
 
     return date.isValid()
   },
