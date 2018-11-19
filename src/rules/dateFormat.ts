@@ -32,5 +32,5 @@ const rule: ValidationRule = {
   message: 'Data inválida.'
 }
 
-RuleContainer.add('date_format', rule)
+RuleContainer.add('dateFormat', rule)
 export default rule

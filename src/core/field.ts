@@ -1,5 +1,5 @@
 import FormValidator from '../index'
-import { is } from 'utils';
+import { is } from '../utils'
 
 import {
   FieldItem,
@@ -59,6 +59,7 @@ export default class Field {
   get error () { return this._flags.errors[0] || '' }
 
   /**
+   * Sets a new value to one of the instance's FieldFlags.
    *
    * @param {Keyof FieldFlags} flag - The flag name
    * @param {Boolean | Array<String>} value - the new value to assigned to the flag
@@ -73,6 +74,7 @@ export default class Field {
   }
 
   /**
+   * Initializes the Field instance.
    *
    * @param {FieldItem} options
    * @returns {void}
@@ -111,6 +113,10 @@ export default class Field {
   }
 
   /**
+   * Adds event listener for the blur event on the input, so that we can
+   * tell when the input has been `touched` by the user, and attaches a
+   * watcher to the input value, validating it's value whenever it changes.
+   *
    * @returns {void}
    * @author Erik Isidore
    */
@@ -139,9 +145,20 @@ export default class Field {
   }
 
   /**
+   * Receives a FieldValidation entity, which can be
+   *  A string: 'required|dateFormat:DD/MM/YYYY'
+   *  An array of strings: ['required', 'dateFormat:DD/MM/YYYY']
+   *  Or an object: { required: true, dateFormat: 'DD/MM/YYYY' }
    *
-   * @param {FieldValidation} rules -
-   * @returns {Array<NormalizedRule>}
+   * And turns this entity into a array of NormalizedRules, this
+   * array will contain an NormalizedRule object for every rule
+   * found in FieldValidation. A NormalizedRule is simply an
+   * object with the format: { ruleName: <name>, args: [<...>] }
+   *
+   * @param {FieldValidation} rules - The validation rules defined for the field.
+   * @returns {Array<NormalizedRule>} - A array containing a NormalizedRule for
+   * every validation rule defined for the field.
+   *
    * @author Erik Isidore
    */
 
