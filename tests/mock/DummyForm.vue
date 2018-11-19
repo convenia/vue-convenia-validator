@@ -9,21 +9,25 @@
   </div>
 </template>
 
-<script>
-//import FormValidator from '../../src/index.ts'
-const FormValidator = require('../../src/index.ts')
+<script lang="ts">
+import { Vue, Component, Mixins } from 'vue-property-decorator'
+import FormValidator from '../../src/index.ts'
 
-module.exports = {
-  mixins: [ FormValidator ],
+@Component
+export default class DummyForm extends Mixins(FormValidator) {
+  public formOne = { fullName: '', age: '' }
+  public birthday = ''
 
-  data () {
-    return {
-      birthday: '',
-      formOne: {
-        fullName: '',
-        age: ''
-      }
-    }
+  updateFullName () {
+    this.formOne.fullName = 'Jon Doe'
+  }
+
+  updateAge () {
+    this.formOne.age = '4'
+  }
+
+  updateBirthday () {
+    this.birthday = '20/02/1940'
   }
 }
 </script>
