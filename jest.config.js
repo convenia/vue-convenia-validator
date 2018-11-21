@@ -7,7 +7,7 @@ module.exports = {
   globals: {
     'ts-jest': {
       isolatedModules: true,
-      diagnostics: { warOnly: true }
+      diagnostics: { warnOnly: true }
     }
   }
 }
