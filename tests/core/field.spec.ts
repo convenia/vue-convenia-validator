@@ -1,8 +1,8 @@
-import { mount } from '@vue/test-utils'
+import { mount, shallowMount } from '@vue/test-utils'
 import Field from '../../src/core/field'
 
 import DummyForm from '../mock/DummyForm.vue'
-const  dummyForm: any = mount(DummyForm)
+const  dummyForm: any = shallowMount(DummyForm)
 
 // Field instances
 const fullNameField = new Field({
@@ -13,6 +13,7 @@ const fullNameField = new Field({
   rules: [ 'required' ],
   value: dummyForm.vm.formOne.fullName
 })
+
 
 const customCb = (age: string) => +age > 5
 const ageField = new Field({
@@ -33,7 +34,6 @@ const birthdayField = new Field({
   value: dummyForm.vm.birthday
 })
 
-
 describe('Field class', () => {
   test('Rule mapping', () => {
     // fullNameField rules
@@ -53,21 +53,5 @@ describe('Field class', () => {
       { ruleName: 'required', args: undefined },
       { ruleName: 'dateFormat', args: ['DD/MM/YYYY'] }
     ])
-  })
-
-  test('FieldFlags', () => {
-    dummyForm.vm.updateBirthday()
-    // dummyForm.vm.birthday = '20/02/1940'
-
-    expect(dummyForm.vm.birthday).toEqual('20/02/1940')
-
-    expect(birthdayField.flags).toEqual({
-      pristine: false,
-      dirty: true,
-      changed: true,
-      touched: false, // We didn't touch the DOM
-      valid: true,
-      errors: []
-    })
   })
 })

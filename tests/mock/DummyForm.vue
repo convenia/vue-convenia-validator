@@ -15,8 +15,8 @@ import FormValidator from '../../src/index.ts'
 
 @Component
 export default class DummyForm extends Mixins(FormValidator) {
-  public formOne = { fullName: '', age: '' }
-  public birthday = ''
+  formOne = { fullName: '', age: '' }
+  birthday = ''
 
   updateFullName () {
     this.formOne.fullName = 'Jon Doe'

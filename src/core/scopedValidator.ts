@@ -15,6 +15,7 @@ import {
   FieldFlags
 } from '../types'
 
+export interface VM extends VueComponent { [dataName: string]: any }
 export type ScopedFormValidation = { [scope: string]: FormValidation }
 export type FormTemplate = ScopedFormValidation | FormValidation
 
@@ -24,7 +25,7 @@ export type FormValidationFlags
 
 
 export default class ScopedValidator {
-  private _vm: VueComponent
+  private _vm: VM
 
   public fields: FieldBag
   public scopes: string[] = []
@@ -77,7 +78,7 @@ export default class ScopedValidator {
         rules,
         scope,
         vm: this._vm,
-        value: undefined, // fix that
+        value: scope ? this._vm[scope][name] : this._vm[name],
         el: this.getFieldEl(name, scope),
       }
 
