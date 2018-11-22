@@ -49,7 +49,9 @@ export default class FieldBag {
    */
 
   has (field: string, scope?: string): boolean {
-    return false
+    return !!this._items.find((item: Field) => scope
+      ? item.name === field && item.scope === scope
+      : item.name === field)
   }
 
   /**
