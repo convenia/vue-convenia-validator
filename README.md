@@ -10,13 +10,13 @@ vue-convenia-validator is meant to be used as a mixin rather than as a plugin.
 #### npm
 
 ```
-npm install cee-validate --save
+npm install vue-convenia-validator --save
 ```
 
 #### yarn
 
 ```
-yarn add cee-validate
+yarn add vue-convenia-validator
 ```
 
 ### Usage
@@ -123,7 +123,6 @@ export default {
   - [ ] dateBetween - Checks if date is in between two date values.
   - [ ] dateBefore - Checks if given date comes before another date.
   - [ ] dateAfter - Checks if given date comes after another date.
-  - [ ] between - Checks if number is in between two values.
   - [ ] email - Checks if value is a valid email address.
   - [ ] url - Checks if value is a valid URL address.
   - [ ] ip - Checks if value is a valid IP address.
