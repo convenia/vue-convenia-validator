@@ -43,7 +43,6 @@ dummyForm.vm.$validator.fields = new FieldBag([ fullNameField, ageField, birthda
 
 
 describe('Field class', () => {
-
   test('Rule mapping', () => {
     expect(dummyForm.vm.$validator).toBeDefined()
 
@@ -67,9 +66,7 @@ describe('Field class', () => {
   })
 
   test('Field listeners', () => {
-    const fullNameInput = dummyForm.find('input[name="fullName"]')
-
-    fullNameInput.trigger('focusout')
+    dummyForm.find('input[name="fullName"]').trigger('focusout')
     dummyForm.setData({ formOne: { fullName: 'Bla' } })
     expect(dummyForm.vm.formOne.fullName).toBe('Bla')
 
