@@ -16,8 +16,8 @@ describe('Rule: custom', () => {
       , (v: string) => /^\D+$/.test(v)
       ]
 
-    expect(custom.validate('Biscoito', callbacks)).toBe(true);
-    expect(custom.validate('FooBarr34', callbacks)).toBe(false);
-    expect(custom.validate('Foo', callbacks)).toBe(false);
+    expect(custom.validate('Biscoito', ...callbacks)).toBe(true);
+    expect(custom.validate('FooBarr34', ...callbacks)).toBe(false);
+    expect(custom.validate('Foo', ...callbacks)).toBe(false);
   })
 })

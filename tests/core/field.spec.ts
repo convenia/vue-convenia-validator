@@ -54,9 +54,9 @@ describe('Field class', () => {
 
     // ageField rules
     expect(ageField.rules).toEqual([
-      { ruleName: 'required', args: true },
-      { ruleName: 'numeric',  args: true },
-      { ruleName: 'custom',   args: customCb }
+      { ruleName: 'required', args: [true] },
+      { ruleName: 'numeric',  args: [true] },
+      { ruleName: 'custom',   args: [customCb] }
     ])
 
     // birthdayField rules

@@ -160,9 +160,9 @@ export default class ScopedValidator {
 
     if (!field || !(field.rules || []).length) return
 
-    const mapErrors = ({ ruleName, args: ruleArgs }: NormalizedRule): string => {
+    const mapErrors = ({ ruleName, args }: NormalizedRule): string => {
       const rule: ValidationRule = RuleContainer.getRule(ruleName)
-      const hasError = !rule.validate(field.value, ruleArgs)
+      const hasError = !rule.validate.apply(null, [field.value, ...args])
       const errorMessage = rule.message
 
       return hasError ? errorMessage : ''
@@ -186,9 +186,7 @@ export default class ScopedValidator {
    */
 
   validateAll (scope?: string): void {
-    this.fields.all(scope).forEach((field: Field) => {
-      this.validate(field.name, field.scope)
-    })
+    this.fields.all(scope).forEach((field: Field) => field.validate())
   }
 
   /**
