@@ -29,9 +29,5 @@ export default class DummyForm extends Mixins(FormValidator) {
   updateBirthday () {
     this.birthday = '20/02/1940'
   }
-
-  ageCallback (age: string): boolean {
-    return +age > 5
-  }
 }
 </script>

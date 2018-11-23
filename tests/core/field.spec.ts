@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils'
 
+import ScopedValidator from '../../src/core/scopedValidator'
 import FieldBag from '../../src/core/FieldBag'
 import Field from '../../src/core/field'
 
@@ -44,7 +45,7 @@ dummyForm.vm.$validator.fields = new FieldBag([ fullNameField, ageField, birthda
 
 describe('Field class', () => {
   test('Rule mapping', () => {
-    expect(dummyForm.vm.$validator).toBeDefined()
+    expect(dummyForm.vm.$validator).toBeInstanceOf(ScopedValidator)
 
     // fullNameField rules
     expect(fullNameField.rules).toEqual([
