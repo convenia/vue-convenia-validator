@@ -20,7 +20,7 @@ const rule: ValidationRule = {
 
     return !!value && regex.test(value)
   },
-  message: 'Format inválido.'
+  message: 'Formato inválido.'
 }
 
 RuleContainer.add('regex', rule)
