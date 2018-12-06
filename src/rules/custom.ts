@@ -15,10 +15,8 @@ import { ValidationRule } from '../types'
  */
 
 const rule: ValidationRule = {
-  validate: (value: any, callbacks: Function | Function[]): boolean => {
-    return Array.isArray(callbacks)
-      ? callbacks.every(f => f(value))
-      : callbacks(value)
+  validate: (value: any, ...callbacks: Function[]): boolean => {
+    return callbacks.every(f => f(value))
   },
   message: 'Campo inválido'
 }

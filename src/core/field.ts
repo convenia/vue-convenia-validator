@@ -43,7 +43,8 @@ export default class Field {
   get validate (): any {
     if (!this._vm || !this._vm.$validator) return () => []
 
-    return this._vm.$validator.validate.bind(this._vm.$validator)
+    const validate = this._vm.$validator.validate
+    return validate.bind(this._vm.$validator, this.name, this.scope)
   }
 
   get watch (): any {
@@ -126,13 +127,13 @@ export default class Field {
 
     const onBlur = () => {
       if (!this._flags.touched) this._flags.touched = true
-      this.validate(this.name, this.scope)
+      this.validate()
     }
 
     const onInput = (value: any) => {
       this.value = value
       this._flags.changed = this.value !== this.initialValue
-      this.validate(this.name, this.scope)
+      this.validate()
 
       if (!this._flags.dirty) {
         this._flags.dirty = true
@@ -171,7 +172,9 @@ export default class Field {
     const objToRules = (rulesObj: { [rule: string]: any }) =>
       Object.keys(rulesObj).map(ruleName => ({
         ruleName,
-        args: rulesObj[ruleName]
+        args: !Array.isArray(rulesObj[ruleName])
+          ? [ rulesObj[ruleName] ]
+          : rulesObj[ruleName]
       }))
 
     return typeof rules === 'string' && rules.length
