@@ -1,18 +1,10 @@
-export type ValidationRules = string | Array<string> | { [rule: string]: any } | undefined
+export type FieldValidation = string | Array<string> | { [rule: string]: any }
+export type FormValidation = { [fieldName: string]: FieldValidation }
+
 export type NormalizedRule = { ruleName: string, args?: any }
 export type ValidationRule = {
   validate: (value: any, ...args: any) => boolean
   message: string
-}
-
-export interface FieldTemplate {
-  type: string
-  name: string
-  value: string
-  label?: string
-  placeholder?: string
-  validationMsg?: string
-  validation?: ValidationRules
 }
 
 export interface FieldItem {
@@ -20,8 +12,8 @@ export interface FieldItem {
   value: any
   name: string
   scope?: string
-  el: Element | HTMLInputElement
-  rules?: ValidationRules
+  el: Element
+  rules: FieldValidation
 }
 
 export type FieldFlags = {

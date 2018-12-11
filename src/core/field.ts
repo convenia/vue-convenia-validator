@@ -1,10 +1,11 @@
 import FormValidator from '../index'
+import { is } from '../utils'
 
 import {
   FieldItem,
   FieldFlags,
   NormalizedRule,
-  ValidationRules
+  FieldValidation
 } from '../types'
 
 
@@ -24,8 +25,8 @@ export default class Field {
   public value: any
   public name: string
   public scope?: string
+  public el: Element
   public rules: NormalizedRule[]
-  public el: Element | HTMLInputElement
 
   constructor (options: FieldItem) {
     this.el = options.el
@@ -33,7 +34,7 @@ export default class Field {
     this.name = options.name
     this.value = options.value
     this.scope = options.scope
-    this.rules = this.mapRules(options.rules || '')
+    this.rules = this.mapRules(options.rules)
     this.initialValue = options.value
 
     this.init(options)
@@ -42,7 +43,8 @@ export default class Field {
   get validate (): any {
     if (!this._vm || !this._vm.$validator) return () => []
 
-    return this._vm.$validator.validate.bind(this._vm.$validator)
+    const validate = this._vm.$validator.validate
+    return validate.bind(this._vm.$validator, this.name, this.scope)
   }
 
   get watch (): any {
@@ -51,23 +53,34 @@ export default class Field {
     return this._vm.$watch.bind(this._vm)
   }
 
-  get flags () {
-    return this._flags
-  }
+  get flags () { return this._flags }
 
-  get errors () {
-    return this._flags.errors
-  }
+  get errors () { return this._flags.errors }
 
-  get error () {
-    return this._flags.errors[0] || ''
-  }
+  get error () { return this._flags.errors[0] || '' }
 
-  setFlag (flag: keyof FieldFlags, value: boolean | string[]) {
+  /**
+   * Sets a new value to one of the instance's FieldFlags.
+   *
+   * @param {Keyof FieldFlags} flag - The flag name
+   * @param {Boolean | Array<String>} value - the new value to assigned to the flag
+   * @returns {void}
+   * @author Erik Isidore
+   */
+
+  setFlag (flag: keyof FieldFlags, value: boolean | string[]): void {
     if (!Object.keys(this._flags).includes(flag)) return
 
     this._flags[flag] = value
   }
+
+  /**
+   * Initializes the Field instance.
+   *
+   * @param {FieldItem} options
+   * @returns {void}
+   * @author Erik Isidore
+   */
 
   init (options: FieldItem): void {
     if (process.env.NODE_ENV !== 'production' && !this.name)
@@ -77,8 +90,14 @@ export default class Field {
     this.addValueListeners()
   }
 
-  // This method will initialize/reset the field _flags.
-  initFlags () {
+  /**
+   * Initializes or resets the Field flags to their default values.
+   *
+   * @returns {void}
+   * @author Erik Isidore
+   */
+
+  initFlags (): void {
     const flagNames = Object.keys(this._flags) as [keyof FieldFlags]
     const defaultFlags: FieldFlags = {
       pristine: !this.value,
@@ -94,22 +113,27 @@ export default class Field {
     })
   }
 
-  // In order to properly validate the field value we
-  // must be aware of whatever changes that happen to this
-  // value, when a change happes, we execute the proper
-  // validation method.
+  /**
+   * Adds event listener for the blur event on the input, so that we can
+   * tell when the input has been `touched` by the user, and attaches a
+   * watcher to the input value, validating it's value whenever it changes.
+   *
+   * @returns {void}
+   * @author Erik Isidore
+   */
+
   addValueListeners (): void {
     if (!this.watch || !this.el) return
 
     const onBlur = () => {
       if (!this._flags.touched) this._flags.touched = true
-      this.validate(this.name, this.scope)
+      this.validate()
     }
 
     const onInput = (value: any) => {
       this.value = value
       this._flags.changed = this.value !== this.initialValue
-      this.validate(this.name, this.scope)
+      this.validate()
 
       if (!this._flags.dirty) {
         this._flags.dirty = true
@@ -121,8 +145,25 @@ export default class Field {
     this.watch(this.scope ? `${this.scope}.${this.name}` : this.name, onInput.bind(this))
   }
 
-  // Rule example: "required|date_format:DD/MM/YYY|between:10,30"
-  mapRules (rules: ValidationRules): Array<NormalizedRule> {
+  /**
+   * Receives a FieldValidation entity, which can be
+   *  A string: 'required|dateFormat:DD/MM/YYYY'
+   *  An array of strings: ['required', 'dateFormat:DD/MM/YYYY']
+   *  Or an object: { required: true, dateFormat: 'DD/MM/YYYY' }
+   *
+   * And turns this entity into a array of NormalizedRules, this
+   * array will contain an NormalizedRule object for every rule
+   * found in FieldValidation. A NormalizedRule is simply an
+   * object with the format: { ruleName: <name>, args: [<...>] }
+   *
+   * @param {FieldValidation} rules - The validation rules defined for the field.
+   * @returns {Array<NormalizedRule>} - A array containing a NormalizedRule for
+   * every validation rule defined for the field.
+   *
+   * @author Erik Isidore
+   */
+
+  mapRules (rules: FieldValidation): Array<NormalizedRule> {
     const stringToRules = (ruleDef: string) => ({
       ruleName: ruleDef.split(':')[0],
       args: ruleDef.split(':')[1] && ruleDef.split(':')[1].split(',')
@@ -131,18 +172,26 @@ export default class Field {
     const objToRules = (rulesObj: { [rule: string]: any }) =>
       Object.keys(rulesObj).map(ruleName => ({
         ruleName,
-        args: rulesObj[ruleName]
+        args: !Array.isArray(rulesObj[ruleName])
+          ? [ rulesObj[ruleName] ]
+          : rulesObj[ruleName]
       }))
 
-    // Please fix that
     return typeof rules === 'string' && rules.length
       ? rules.split('|').map(stringToRules)
       : Array.isArray(rules) ? rules.map(stringToRules)
-      : rules && rules.constructor === Object ? objToRules(<object>rules)
+      : rules && is(rules, 'Object') ? objToRules(rules as object)
       : []
   }
 
-  reset () {
+  /**
+   * Resets the field flags and it's value.
+   *
+   * @returns {void}
+   * @author Erik Isidore
+   */
+
+  reset (): void {
     this.value = this.initialValue
     this.initFlags()
   }
