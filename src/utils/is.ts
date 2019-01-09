@@ -4,7 +4,7 @@
  * @param {String} constructor
  * @returns {Boolean}
  *
- * @author Victor Luiz Cavalcanti <vitorluizc@outlook.com>
+ * @author Vitor Luiz Cavalcanti (https://github.com/VitorLuizC)
  */
 
 export const is = (value: any, constructor: string): boolean => {
