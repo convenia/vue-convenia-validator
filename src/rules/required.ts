@@ -17,6 +17,7 @@ const rule: ValidationRule = {
     if (typeof value === 'object') return !!Object.keys(value).length
     if (typeof value === 'string') return !!value.trim().length
     if (typeof value === 'number') return !!value
+    if (typeof value === 'boolean') return true
 
     return !!value
   },
