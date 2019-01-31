@@ -155,10 +155,10 @@ export default class ScopedValidator {
    * @author Erik Isidore
    */
 
-  validate (fieldName: string, scope?: string): void {
+  validate (fieldName: string, scope?: string): boolean {
     const field = this.fields.get(fieldName, scope)
 
-    if (!field || !(field.rules || []).length) return
+    if (!field || !(field.rules || []).length) return false
 
     const mapErrors = ({ ruleName, args }: NormalizedRule): string => {
       const rule: ValidationRule = RuleContainer.getRule(ruleName)
@@ -174,6 +174,8 @@ export default class ScopedValidator {
 
     field.setFlag('errors', fieldErrors)
     field.setFlag('valid', !fieldErrors.length)
+
+    return !fieldErrors.length
   }
 
   /**
@@ -185,8 +187,11 @@ export default class ScopedValidator {
    * @author Erik Isidore
    */
 
-  validateAll (scope?: string): void {
-    this.fields.all(scope).forEach((field: Field) => field.validate())
+  validateAll (scope?: string): boolean {
+    const fieldFlags = this.fields.all(scope)
+      .map((field: Field) => field.validate())
+
+    return fieldFlags.every(isValid => !!isValid)
   }
 
   /**
