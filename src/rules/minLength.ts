@@ -18,9 +18,9 @@ type ValueType = Array<any> | string | number
 const rule: ValidationRule = {
   validate: (value: ValueType, minLength: number | string): boolean => {
     if (Array.isArray(value) || typeof value === 'string')
-      return (value || []).length < minLength
+      return (value || []).length >= minLength
 
-    return value < minLength
+    return value >= minLength
   },
   message: 'Valor abaixo do limite.'
 }
