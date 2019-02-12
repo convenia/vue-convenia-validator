@@ -78,15 +78,16 @@ export default class ScopedValidator {
         rules,
         scope,
         vm: this._vm,
-        value: scope ? this._vm[scope][name] : this._vm[name],
         el: this.getFieldEl(name, scope),
+        value: scope ? this._vm[scope][name] : this._vm[name],
       }
 
       return new Field(fieldOptions)
     }
 
     // This will map each form scope name to an array of Field instances,
-    // producing an Array of Field arrays, crazy rite?
+    // producing an Array of Field arrays, crazy rite? Each field will
+    // have its respective scope assigned to it.
     const scopes = this.scopes.map((scope: string) => {
       const formScope: FormValidation = template[scope] as FormValidation
 
@@ -158,7 +159,8 @@ export default class ScopedValidator {
   validate (fieldName: string, scope?: string): boolean {
     const field = this.fields.get(fieldName, scope)
 
-    if (!field || !(field.rules || []).length) return false
+    // If the field doesn't have a rule registered, then it's always valid
+    if (!field || !(field.rules || []).length) return true
 
     const mapErrors = ({ ruleName, args }: NormalizedRule): string => {
       const rule: ValidationRule = RuleContainer.getRule(ruleName)
