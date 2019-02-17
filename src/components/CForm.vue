@@ -9,29 +9,29 @@
     <form class="c-form" name="formData" @submit.prevent="$emit('submit', formData)">
       <div class="fields">
         <slot>
-          <template v-for="field in fields">
+          <template v-for="(field, fieldName) in allFields">
             <!-- Add support for checkboxes, radio buttons, and textareas -->
 
             <c-select
               v-if="['select'].includes(field.type)"
               class="select field"
-              :key="field.name"
-              :name="field.name"
+              :key="fieldName"
+              :name="fieldName"
               :validation="getValidationMsg(field)"
               :value="getSelectValue(field)"
               v-bind="field"
-              @input="formData[field.name] = field.trackBy ? $event[field.trackBy] : $event"
+              @input="formData[fieldName] = field.trackBy ? $event[field.trackBy] : $event"
             />
 
             <c-input
               v-else
               class="field"
-              :name="field.name"
-              :key="field.name"
+              :name="fieldName"
+              :key="fieldName"
               :validation="getValidationMsg(field)"
-              :value="formData[field.name]"
+              :value="formData[fieldName]"
               v-bind="field"
-              @input="formData[field.name] = $event"
+              @input="formData[fieldName] = $event"
             />
           </template>
         </slot>
@@ -39,6 +39,9 @@
 
       <div class="actions">
         <slot name="actions">
+          <c-button success class="action" @click.stop="attach">
+            Attach
+          </c-button>
           <c-button error class="action" @click.stop="$validator.reset()">
             Reset
           </c-button>
@@ -54,18 +57,19 @@
 <script lang="ts">
 import { Vue, Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 
-//import FormValidator from '@/plugins/validator/mixin'
-import FormValidator from 'cee-validate'
+import FormValidator from '@/validator/index'
+//import FormValidator from 'cee-validate'
 
 type SelectFieldOption = string | { label: string, value: any }
 
 @Component
 export default class CForm extends Mixins(FormValidator) {
-  @Prop(Array) fields!: Form.FieldTemplate[]
+  @Prop(Object) fields!: Form.FieldTemplate[]
   @Prop(Boolean) disabled: boolean
   @Prop(Boolean) loading: boolean
 
   private formData: { [name: string]: any } = { }
+  private allFields: any = {}
 
   getValidationMsg (fieldDef: Form.FieldTemplate): string {
     const field = this.$validator.fields.get(fieldDef.name)
@@ -86,26 +90,46 @@ export default class CForm extends Mixins(FormValidator) {
     }) || ''
   }
 
+  attach () {
+    const testField = {
+      name: 'testField',
+      rules: 'required',
+      scope: 'formData'
+    }
+
+    const testFieldDef = {
+      type: 'text',
+      placeholder: 'Test Field',
+      label: 'Test Field',
+      validation: 'required',
+      value: ''
+    }
+
+    this.allFields = { ...this.allFields, testField: testFieldDef }
+    // this.formData.testField = ''
+
+    this.$nextTick(this.$validator.attach(testField))
+  }
+
   submit () {
     console.log('CForm.validator: ', this.$validator)
   }
 
   created () {
-    const test =
-      [{ "type": "text"
-       , "name": "testfullName"
-       , "label": "Nome completo"
-       , "placeholder": "Nome completo"
-       , "validation": "required"
-       , "value": ""
-       }]
+    const reduceToValue = (entity: any, key: any, ignoreEmpty: any): any =>
+      Object.keys(entity)
+        .reduce((acc: any, propName: any) => ({
+          ...acc,
+          ...(!(entity[propName] || {})[key] && ignoreEmpty
+            ? {}
+            : { [propName]: (entity[propName] || {})[key] })
+        }), {})
 
-    this.$validator.init({ formData: this.fields })
-
-    this.formData = this.fields.reduce((acc, field) => ({
-      ...acc,
-      [field.name]: field.value
-    }), { })
+    this.allFields = { ...this.fields }
+    const validations = reduceToValue(this.fields, 'validation', true)
+    console.log('validations: ', { validations })
+    this.formData = { ...reduceToValue(this.fields, 'value'), testField: '' }
+    this.$validator.init({ formData: validations })
   }
 }
 </script>
