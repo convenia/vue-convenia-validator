@@ -8,7 +8,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 
 import CForm from '@/components/CForm.vue'
-import formTemplate from '@/templates/SimpleForm.json'
+import formTemplate from '@/templates/SimpleForm.js'
 
 @Component({
   components: { CForm },

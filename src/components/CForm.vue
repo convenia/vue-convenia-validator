@@ -42,11 +42,8 @@
           <c-button success class="action" @click.stop="attach">
             Attach
           </c-button>
-          <c-button error class="action" @click.stop="$validator.reset()">
-            Reset
-          </c-button>
-          <c-button primary class="action" @click.stop="$validator.validateAll()">
-            Salvar
+          <c-button error class="action" @click.stop="detach">
+            Detach
           </c-button>
         </slot>
       </div>
@@ -106,13 +103,17 @@ export default class CForm extends Mixins(FormValidator) {
     }
 
     this.allFields = { ...this.allFields, testField: testFieldDef }
-    // this.formData.testField = ''
 
-    this.$nextTick(this.$validator.attach(testField))
+    this.$set(this.formData, 'testField', 'imdo')
+    this.$nextTick(() => this.$validator.attach(testField))
   }
 
-  submit () {
-    console.log('CForm.validator: ', this.$validator)
+  detach () {
+    const { testField, ...fields } = this.allFields
+    this.allFields = fields
+    this.$delete(this.formData, 'testField')
+
+    this.$validator.detach('testField', 'formData')
   }
 
   created () {
@@ -125,10 +126,24 @@ export default class CForm extends Mixins(FormValidator) {
             : { [propName]: (entity[propName] || {})[key] })
         }), {})
 
+    // This is just so we can test the new attach/detach methods
     this.allFields = { ...this.fields }
     const validations = reduceToValue(this.fields, 'validation', true)
-    console.log('validations: ', { validations })
-    this.formData = { ...reduceToValue(this.fields, 'value'), testField: '' }
+
+    Object.keys(this.fields).forEach(field => {
+      const fieldObj = this.fields[field] || {}
+
+      if (typeof fieldObj.validation === 'function') {
+        this.$watch('formData', (val) => {
+          const newRule = fieldObj.validation(val)
+          console.log(`field ${field} validation: `, newRule)
+
+          this.$validator.updateFieldRule({ name: field, scope: 'formData' }, newRule)
+        }, { deep: true })
+      }
+    })
+
+    this.formData = reduceToValue(this.fields, 'value')
     this.$validator.init({ formData: validations })
   }
 }
