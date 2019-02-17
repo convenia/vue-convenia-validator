@@ -61,7 +61,7 @@ export default class ScopedValidator {
   private __init (template: FormTemplate): void {
     this.scopes = Object.keys(template).filter(key => isFormScope(template[key]))
     this.fields.items = this.initFields(template)
-    this.validations = this.initValidations()
+    this.validations = this.mapValidations()
   }
 
   /**
@@ -112,7 +112,7 @@ export default class ScopedValidator {
    * @author Erik Isidore
    */
 
-  initValidations (): FormValidationFlags {
+  mapValidations (): FormValidationFlags {
     const mapFlags = (scope?: string) => this.fields.all(scope)
       .reduce((acc, field: Field) => ({ ...acc, [field.name]: field.flags }), {})
 
@@ -165,7 +165,7 @@ export default class ScopedValidator {
 
     const mapErrors = ({ ruleName, args }: NormalizedRule): string => {
       const rule: ValidationRule = RuleContainer.getRule(ruleName)
-      const hasError = !rule.validate.apply(null, [field.value, ...args])
+      const hasError = !rule.validate.apply(null, [field.value, ...(args || [])])
       const errorMessage = rule.message
 
       return hasError ? errorMessage : ''
@@ -220,20 +220,17 @@ export default class ScopedValidator {
    */
 
   attach (field: { name: string, rules: string, scope: string }): void {
-    const field: Field = new Field({
+    const newField: Field = new Field({
       vm: this._vm,
       name: field.name,
       rules: field.rules,
       scope: field.scope,
       el: this.getFieldEl(field.name, field.scope),
-      value: field.scope ? this._vm[scope][name] : this._vm[name]
+      value: field.scope ? this._vm[field.scope][field.name] : this._vm[field.name]
     })
 
-    field.scope
-      ? this.validations[scope][field.name] = field.flags
-      : this.validations[field.name] = field.flags
-
-    this.fields.push(field)
+    this.fields.push(newField)
+    this.validations = this.mapValidations()
   }
 
   /**
@@ -246,10 +243,15 @@ export default class ScopedValidator {
    */
 
   detach (field: string, scope?: string): void {
-    scope
-      ? delete this.validatons[scope][field]
-      : delete this.validatons[field]
-    
     this.fields.remove(field, scope)
+    this.validations = this.mapValidations()
+  }
+
+  updateFieldRule (field: { name: string, scope: string }, rules: FieldValidation): void {
+    const fieldInstance : Field | undefined = this.fields.get(field.name, field.scope)
+    if (!fieldInstance) return
+
+    fieldInstance.updateRule(rules)
+    fieldInstance.validate()
   }
 }

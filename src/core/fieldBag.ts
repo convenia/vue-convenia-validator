@@ -78,8 +78,8 @@ export default class FieldBag {
    */
 
   remove (field: string, scope?: string): void {
-    this._items = this._items.filter((item: Field) => scope
-      ? item.name !== field && item.scope !== scope
+    this._items = this._items.filter((item: Field) => scope && item.scope === scope
+      ? item.name !== field
       : item.name !== field)
   }
 }
