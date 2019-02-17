@@ -67,4 +67,19 @@ export default class FieldBag {
     // Check if item is already present in the FieldBag instance
     this._items.push.apply(this._items, Array.isArray(item) ? item : [ item ])
   }
+
+
+  /**
+   * Removes an existing field from the FieldBag instance.
+   *
+   * @param {String} field - The name of the field
+   * @param {String} scope? - Optional scope of the field
+   * @returns {void}
+   */
+
+  remove (field: string, scope?: string): void {
+    this._items = this._items.filter((item: Field) => scope
+      ? item.name !== field && item.scope !== scope
+      : item.name !== field)
+  }
 }

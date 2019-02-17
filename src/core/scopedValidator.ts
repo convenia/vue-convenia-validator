@@ -15,6 +15,9 @@ import {
   FieldFlags
 } from '../types'
 
+
+// ScopedValidor specific types
+
 export interface VM extends VueComponent { [dataName: string]: any }
 export type ScopedFormValidation = { [scope: string]: FormValidation }
 export type FormTemplate = ScopedFormValidation | FormValidation
@@ -210,16 +213,43 @@ export default class ScopedValidator {
   /**
    * Attaches a new field to the validator.
    *
-   * @author
+   * @param {}
+   * @returns {void}
+   *
+   * @author Erik Isidore
    */
 
-  attach () { }
+  attach (field: { name: string, rules: string, scope: string }): void {
+    const field: Field = new Field({
+      vm: this._vm,
+      name: field.name,
+      rules: field.rules,
+      scope: field.scope,
+      el: this.getFieldEl(field.name, field.scope),
+      value: field.scope ? this._vm[scope][name] : this._vm[name]
+    })
+
+    field.scope
+      ? this.validations[scope][field.name] = field.flags
+      : this.validations[field.name] = field.flags
+
+    this.fields.push(field)
+  }
 
   /**
    * Detaches an existing field from the validator.
    *
-   * @author
+   * @param {}
+   * @returns {void}
+   *
+   * @author Erik Isidore
    */
 
-  detach (field: string, scope?: string) { }
+  detach (field: string, scope?: string): void {
+    scope
+      ? delete this.validatons[scope][field]
+      : delete this.validatons[field]
+    
+    this.fields.remove(field, scope)
+  }
 }
