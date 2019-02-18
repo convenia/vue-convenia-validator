@@ -205,7 +205,7 @@ export default class Field {
    * @author Erik Isidore
    */
 
-  updateRule (rule: FieldValidation): void {
+  setRule (rule: FieldValidation): void {
     this.rules = this.mapRules(rule)
   }
 }

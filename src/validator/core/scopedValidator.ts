@@ -264,7 +264,7 @@ export default class ScopedValidator {
    * @author Erik Isidor
    */
 
-  updateFieldRule (field: { name: string, scope: string }, rules: FieldValidation): void {
+  setFieldRule (field: { name: string, scope: string }, rules: FieldValidation): void {
     const fieldInstance : Field | undefined = this.fields.get(field.name, field.scope)
     if (!fieldInstance) return
 

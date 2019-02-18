@@ -136,9 +136,7 @@ export default class CForm extends Mixins(FormValidator) {
       if (typeof fieldObj.validation === 'function') {
         this.$watch('formData', (val) => {
           const newRule = fieldObj.validation(val)
-          console.log(`field ${field} validation: `, newRule)
-
-          this.$validator.updateFieldRule({ name: field, scope: 'formData' }, newRule)
+          this.$validator.setFieldRule({ name: field, scope: 'formData' }, newRule)
         }, { deep: true })
       }
     })
