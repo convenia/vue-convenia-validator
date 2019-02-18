@@ -195,7 +195,7 @@ export default class Field {
     this.value = this.initialValue
     this.initFlags()
   }
-  
+
   /**
    * Dynamically updates the field's rules and remaps them.
    *
@@ -205,7 +205,7 @@ export default class Field {
    * @author Erik Isidore
    */
 
-  updateRule (rule: FieldValidation): void {
+  setRule (rule: FieldValidation): void {
     this.rules = this.mapRules(rule)
   }
 }
