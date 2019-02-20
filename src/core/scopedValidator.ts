@@ -15,6 +15,9 @@ import {
   FieldFlags
 } from '../types'
 
+
+// ScopedValidor specific types
+
 export interface VM extends VueComponent { [dataName: string]: any }
 export type ScopedFormValidation = { [scope: string]: FormValidation }
 export type FormTemplate = ScopedFormValidation | FormValidation
@@ -58,7 +61,7 @@ export default class ScopedValidator {
   private __init (template: FormTemplate): void {
     this.scopes = Object.keys(template).filter(key => isFormScope(template[key]))
     this.fields.items = this.initFields(template)
-    this.validations = this.initValidations()
+    this.validations = this.mapValidations()
   }
 
   /**
@@ -110,7 +113,7 @@ export default class ScopedValidator {
    * @author Erik Isidore
    */
 
-  initValidations (): FormValidationFlags {
+  mapValidations (): FormValidationFlags {
     const mapFlags = (scope?: string) => this.fields.all(scope)
       .reduce((acc, field: Field) => ({ ...acc, [field.name]: field.flags }), {})
 
@@ -164,7 +167,7 @@ export default class ScopedValidator {
 
     const mapErrors = ({ ruleName, args }: NormalizedRule): string => {
       const rule: ValidationRule = RuleContainer.getRule(ruleName)
-      const hasError = !rule.validate.apply(null, [field.value, ...args])
+      const hasError = !rule.validate.apply(null, [field.value, ...(args || [])])
       const errorMessage = rule.message
 
       return hasError ? errorMessage : ''
@@ -212,16 +215,45 @@ export default class ScopedValidator {
   /**
    * Attaches a new field to the validator.
    *
-   * @author
+   * @param {}
+   * @returns {void}
+   *
+   * @author Erik Isidore
    */
 
-  attach () { }
+  attach (field: { name: string, rules: string, scope: string }): void {
+    const newField: Field = new Field({
+      vm: this._vm,
+      name: field.name,
+      rules: field.rules,
+      scope: field.scope,
+      el: this.getFieldEl(field.name, field.scope),
+      value: field.scope ? this._vm[field.scope][field.name] : this._vm[field.name]
+    })
+
+    this.fields.push(newField)
+    this.validations = this.mapValidations()
+  }
 
   /**
    * Detaches an existing field from the validator.
    *
-   * @author
+   * @param {}
+   * @returns {void}
+   *
+   * @author Erik Isidore
    */
 
-  detach (field: string, scope?: string) { }
+  detach (field: string, scope?: string): void {
+    this.fields.remove(field, scope)
+    this.validations = this.mapValidations()
+  }
+
+  setFieldRule (field: { name: string, scope: string }, rules: FieldValidation): void {
+    const fieldInstance : Field | undefined = this.fields.get(field.name, field.scope)
+    if (!fieldInstance) return
+
+    fieldInstance.setRule(rules)
+    fieldInstance.validate()
+  }
 }
