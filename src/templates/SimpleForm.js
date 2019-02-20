@@ -1,4 +1,4 @@
-{
+export default {
   "fullName":
     { "type": "text"
     , "label": "Nome completo"
@@ -104,5 +104,12 @@
     , "placeholder": "Nome do pai"
     , "validation": ""
     , "value": ""
-    }
+    },
+    "dinamicValidation":
+      { "type": "text"
+      , "label": "This field's validation changes according to the rest of the form"
+      , "placeholder": "Crazy field"
+      , "validation": (formData) => (formData.testField || '').length ? 'required' : ''
+      , "value": "I'm crazy"
+      }
 }

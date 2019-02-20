@@ -78,8 +78,15 @@ export default class FieldBag {
    */
 
   remove (field: string, scope?: string): void {
-    this._items = this._items.filter((item: Field) => scope
-      ? item.name !== field && item.scope !== scope
-      : item.name !== field)
+    this._items = this._items.filter((item: Field) => {
+      console.log(`remove ${field}.${scope}: `, { item })
+      console.log('the test: ', item.name !== field && (!scope || item.scope !== scope))
+
+      return scope && item.scope === scope
+        ? item.name !== field
+        : item.name !== field
+    })
+
+    console.log('new items: ', this._items)
   }
 }

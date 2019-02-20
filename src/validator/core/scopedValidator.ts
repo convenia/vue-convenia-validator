@@ -61,7 +61,7 @@ export default class ScopedValidator {
   private __init (template: FormTemplate): void {
     this.scopes = Object.keys(template).filter(key => isFormScope(template[key]))
     this.fields.items = this.initFields(template)
-    this.validations = this.initValidations()
+    this.validations = this.mapValidations()
   }
 
   /**
@@ -112,7 +112,7 @@ export default class ScopedValidator {
    * @author Erik Isidore
    */
 
-  initValidations (): FormValidationFlags {
+  mapValidations (): FormValidationFlags {
     const mapFlags = (scope?: string) => this.fields.all(scope)
       .reduce((acc, field: Field) => ({ ...acc, [field.name]: field.flags }), {})
 
@@ -222,7 +222,7 @@ export default class ScopedValidator {
    * @author Erik Isidore
    */
 
-  attach (field: { name: string, rules: string, scope: string }): void {
+  attach (field: { name: string, scope: string, rules: FieldValidation }): void {
     const newField: Field = new Field({
       vm: this._vm,
       name: field.name,
@@ -232,13 +232,9 @@ export default class ScopedValidator {
       value: field.scope ? this._vm[field.scope][field.name] : this._vm[field.name]
     })
 
-    console.log('attach: ', { field, validations: this.validations })
-
-    field.scope && this.scopes.length > 1
-      ? this.validations[field.scope][field.name] = newField.flags
-      : this.validations[field.name] = newField.flags
-
     this.fields.push(newField)
+    this.validations = this.mapValidations()
+    console.log('attach: ', { field, validations: this.validations })
   }
 
   /**
@@ -251,10 +247,28 @@ export default class ScopedValidator {
    */
 
   detach (field: string, scope?: string): void {
-    scope
-      ? delete this.validations[scope][field]
-      : delete this.validations[field]
-
     this.fields.remove(field, scope)
+    this.validations = this.mapValidations()
+
+    console.log('detach: ', { field, scope, fields: this.fields, validations: this.validations })
+  }
+
+  /**
+   * Dynamically updates a field's rules and immediatelly triggers its'
+   * validation.
+   *
+   * @param {Object} field - The object containing name and scope of the field
+   * @param {FieldValidation} rules - The new rules to be applied to the field.
+   * @returns {void}
+   *
+   * @author Erik Isidor
+   */
+
+  setFieldRule (field: { name: string, scope: string }, rules: FieldValidation): void {
+    const fieldInstance : Field | undefined = this.fields.get(field.name, field.scope)
+    if (!fieldInstance) return
+
+    fieldInstance.updateRule(rules)
+    fieldInstance.validate()
   }
 }

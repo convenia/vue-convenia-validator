@@ -50,7 +50,6 @@ export default class Field {
   get watch (): any {
     if (!this._vm || !this._vm.$validator) return
 
-    console.log(`field ${this.name} has a watch function`)
     return this._vm.$watch.bind(this._vm)
   }
 
@@ -142,18 +141,8 @@ export default class Field {
       }
     }
 
-    console.log('listeners: ', {
-      scope: this.scope,
-      name: this.name,
-      this: this
-    })
-
     this.el.addEventListener('focusout', onBlur.bind(this))
-    this.watch(
-      this.scope ? `${this.scope}.${this.name}` : this.name,
-      onInput.bind(this),
-      { deep: true, immediate: true }
-    )
+    this.watch(this.scope ? `${this.scope}.${this.name}` : this.name, onInput.bind(this))
   }
 
   /**
@@ -205,5 +194,18 @@ export default class Field {
   reset (): void {
     this.value = this.initialValue
     this.initFlags()
+  }
+
+  /**
+   * Dynamically updates the field's rules and remaps them.
+   *
+   * @param {FieldValidation} rule - The new rules to be applied
+   * @returns {void}
+   *
+   * @author Erik Isidore
+   */
+
+  setRule (rule: FieldValidation): void {
+    this.rules = this.mapRules(rule)
   }
 }
