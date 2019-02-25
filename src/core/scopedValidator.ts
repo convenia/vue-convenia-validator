@@ -162,8 +162,8 @@ export default class ScopedValidator {
   validate (fieldName: string, scope?: string): boolean {
     const field = this.fields.get(fieldName, scope)
 
-    // If the field doesn't have a rule registered, then it's always valid
-    if (!field || !(field.rules || []).length) return true
+    // Field doesn't exist, return false (invalid field)
+    if (!field) return false
 
     const mapErrors = ({ ruleName, args }: NormalizedRule): string => {
       const rule: ValidationRule = RuleContainer.getRule(ruleName)
