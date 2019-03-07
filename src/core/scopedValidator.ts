@@ -238,7 +238,8 @@ export default class ScopedValidator {
   /**
    * Detaches an existing field from the validator.
    *
-   * @param {}
+   * @param {String} field - The name of the field
+   * @param {String} scope? - Optional scope of the field
    * @returns {void}
    *
    * @author Erik Isidore
@@ -249,11 +250,20 @@ export default class ScopedValidator {
     this.validations = this.mapValidations()
   }
 
+  /**
+   * Sets the rule of a field and validate it if it has changed.
+   *
+   * @param {Object<name: string, scope: string>} field - Object with name
+   * and scope of the field.
+   * @param {FieldValidation} rules - The rules to be set in the field
+   * @returns {void}
+   */
   setFieldRule (field: { name: string, scope: string }, rules: FieldValidation): void {
     const fieldInstance : Field | undefined = this.fields.get(field.name, field.scope)
     if (!fieldInstance) return
 
     fieldInstance.setRule(rules)
-    fieldInstance.validate()
+
+    if (fieldInstance.flags.changed) fieldInstance.validate()
   }
 }
