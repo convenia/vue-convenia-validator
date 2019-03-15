@@ -26,6 +26,8 @@ dayjs.extend(customParseFormat)
 
 const rule: ValidationRule = {
   validate: (value: string | number, format: string = 'DD/MM/YYYY'): boolean => {
+    if (!value) return true
+
     const options = is(value, 'String') ? { format } : { }
     const date = dayjs(value, <any>options)
 
