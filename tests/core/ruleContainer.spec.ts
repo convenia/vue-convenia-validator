@@ -24,7 +24,7 @@ describe('RuleContainer class', () => {
     const rules = RuleContainer.rules
 
     expect(rules).toBeInstanceOf(Object)
-    expect(Object.keys(rules).length).toBe(6)
+    expect(Object.keys(rules).length).toBe(9)
   })
 
   test('Rule removal', () => {
