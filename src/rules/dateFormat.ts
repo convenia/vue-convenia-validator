@@ -18,7 +18,8 @@ dayjs.extend(customParseFormat)
  * @param {String} format? - Optional parameter to validate whether the the
  * given input value has the correct format. If given, the value must be a
  * string, otherwise this parameter is completely ignored.
- * @returns {boolean} True if the given value is valid, false otherwise.
+ * @returns {boolean} True if the given value is valid or empty, false otherwise.
+ * If you want to check for empty value, use the 'required' rule.
  *
  * @author Erik Isidore
  * @version 0.1
