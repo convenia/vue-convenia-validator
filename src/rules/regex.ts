@@ -16,6 +16,8 @@ import { is } from '../utils'
 
 const rule: ValidationRule = {
   validate: (value: string, regex: RegExp): boolean => {
+    if (!value) return true
+
     if (!is(value, 'String') || !is(regex, 'RegExp')) return false
 
     return !!value && regex.test(value)

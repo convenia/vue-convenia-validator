@@ -3,7 +3,7 @@ import { ValidationRule } from '../types'
 
 const rule: ValidationRule = {
   validate: (value: string): boolean => {
-    if (!value) return false
+    if (!value) return true
 
     const FTAP = '3298765432'
     const numPis = (value + '').replace(/[^\d]+/g, '')
