@@ -17,7 +17,7 @@ type ValueType = Array<any> | string | number
  */
 const rule: ValidationRule = {
   validate: (value: ValueType, minLength: number | string): boolean => {
-    if (!value) return true
+    if (typeof value !== 'number' && !value) return true
 
     if (Array.isArray(value) || typeof value === 'string')
       return (value || []).length >= minLength
