@@ -4,15 +4,18 @@ import FieldBag from './fieldBag'
 import Field from './field'
 
 import RuleContainer from './ruleContainer'
-import { isFormScope } from '../utils'
+import { isFormScope, is } from '../utils'
 import '../rules'
 
 import {
+  ValidatorOptionsObject,
+  ValidatorOptions,
   NormalizedRule,
   ValidationRule,
   FormValidation,
   FieldValidation,
-  FieldFlags
+  FieldFlags,
+  ValidatorOptionsFn,
 } from '../types'
 
 
@@ -32,13 +35,32 @@ export default class ScopedValidator {
 
   public fields: FieldBag
   public scopes: string[] = []
+
+  private _options: ValidatorOptionsObject = {}
   public validations: FormValidationFlags = {}
+
 
   constructor (vm: VueComponent) {
     this._vm = vm
     this.fields = new FieldBag()
 
-    if (vm.$options.validation) this.init(vm.$options.validation)
+    vm.$nextTick(() => {
+      if (this._vm.$options.validatorOptions)
+        this.options = this._vm.$options.validatorOptions
+
+      if (this._vm.$options.validations)
+        this.init(this._vm.$options.validations)
+    })
+  }
+
+  get options () {
+    return this._options
+  }
+
+  set options (options: ValidatorOptions) {
+    this._options = is(options, 'Function')
+      ? options(this._vm)
+      : { ...options }
   }
 
   /**
@@ -54,7 +76,7 @@ export default class ScopedValidator {
    * @author Erik Isidore
    */
 
-  public init (template:FormTemplate): void {
+  public init (template: FormTemplate): void {
     this._vm.$nextTick(this.__init.bind(this, template))
   }
 
