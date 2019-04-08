@@ -12,6 +12,8 @@ import { is } from '../utils'
  */
 const rule: ValidationRule = {
   validate: (value): boolean => {
+    if (!value) return true
+
     const isInvalid = (cpf: string, rest: number, pos: number): boolean =>
       rest !== parseInt(cpf.substring(pos, pos + 1))
 
