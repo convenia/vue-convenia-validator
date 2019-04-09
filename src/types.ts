@@ -24,3 +24,9 @@ export type FieldFlags = {
   valid: boolean
   errors: string[]
 }
+
+
+export type ValidatorOptions = ValidatorOptionsObject | ValidatorOptionsFn
+
+export type ValidatorOptionsFn = (vm: any) => ValidatorOptionsObject
+export type ValidatorOptionsObject = { noListeners?: boolean }
