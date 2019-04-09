@@ -130,17 +130,18 @@ export default class Field {
    */
 
   addValueListeners (): void {
-    if (!this.watch || !this.el || this.options.noListeners) return
+    if (!this.watch || !this.el) return
 
     const onBlur = () => {
       if (!this._flags.touched) this._flags.touched = true
-      this.validate()
+      if (!this.options.noListeners) this.validate()
     }
 
     const onInput = (value: any) => {
       this.value = value
       this._flags.changed = this.value !== this.initialValue
-      this.validate()
+
+      if (!this.options.noListeners) this.validate()
 
       if (!this._flags.dirty) {
         this._flags.dirty = true

@@ -57,7 +57,7 @@ export default class ScopedValidator {
     return this._options
   }
 
-  set options (options: ValidatorOptions) {
+  set options (options: any) {
     this._options = is(options, 'Function')
       ? options(this._vm)
       : { ...options }
@@ -218,7 +218,10 @@ export default class ScopedValidator {
     const fieldFlags = this.fields.all(scope)
       .map((field: Field) => field.validate())
 
-    return fieldFlags.every(isValid => !!isValid)
+    const isValid = fieldFlags.every(isValid => !!isValid)
+    this.options = { ...(this.options || {}), noListeners: false }
+
+    return isValid
   }
 
   /**
