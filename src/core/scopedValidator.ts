@@ -57,7 +57,7 @@ export default class ScopedValidator {
     return this._options
   }
 
-  set options (options: ValidatorOptions) {
+  set options (options: any) {
     this._options = is(options, 'Function')
       ? options(this._vm)
       : { ...options }
