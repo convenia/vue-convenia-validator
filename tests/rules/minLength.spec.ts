@@ -7,7 +7,7 @@ describe('Rule: minLength', () => {
     expect(minLength.validate('12345', 5)).toBe(true)
     expect(minLength.validate('123456', 5)).toBe(true)
 
-    expect(minLength.validate('', 5)).toBe(false)
+    expect(minLength.validate('', 5)).toBe(true)
     expect(minLength.validate('', 0)).toBe(true)
   })
 

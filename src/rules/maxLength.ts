@@ -17,6 +17,8 @@ type ValueType = Array<any> | string | number
  */
 const rule: ValidationRule = {
   validate: (value: ValueType, maxLength: number | string): boolean => {
+    if (typeof value !== 'number' && !value) return true
+
     if (Array.isArray(value) || typeof value === 'string')
       return (value || []).length <= maxLength
 

@@ -53,6 +53,13 @@ export default class Field {
     return this._vm.$watch.bind(this._vm)
   }
 
+  get options (): any {
+    if (!this._vm || !this._vm.$validator) return
+
+    return this._vm.$validator.options
+  }
+
+
   get flags () { return this._flags }
 
   get errors () { return this._flags.errors }
@@ -123,7 +130,7 @@ export default class Field {
    */
 
   addValueListeners (): void {
-    if (!this.watch || !this.el) return
+    if (!this.watch || !this.el || this.options.noListeners) return
 
     const onBlur = () => {
       if (!this._flags.touched) this._flags.touched = true
