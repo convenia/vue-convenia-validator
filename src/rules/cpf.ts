@@ -30,7 +30,8 @@ const rule: ValidationRule = {
 
     if (!value.match(/^\d+$/)) return false
 
-    if (value === '00000000000' || value.length !== 11) return false
+    if (value === '00000000000' || value === '11111111111') return false
+    if (value.length !== 11) return false
 
     if (isInvalid(value, getRest(sumDigit(value, 9)), 9)) return false
 
