@@ -49,7 +49,7 @@ export default {
     }
   }
 
-  validation: {
+  validations: {
     fullName: 'required',
     birthday: 'required|date_format:DD/MM/YYYY'
   }
@@ -96,7 +96,7 @@ export default {
     }
   }
 
-  validation: {
+  validations: {
     formOne: {
       fullName: 'required',
       birthday: 'required|date_format:DD/MM/YYYY'
@@ -123,7 +123,7 @@ export default {
   - [ ] dateBetween - Checks if date is in between two date values.
   - [ ] dateBefore - Checks if given date comes before another date.
   - [ ] dateAfter - Checks if given date comes after another date.
-  - [ ] email - Checks if value is a valid email address.
+  - [x] email - Checks if value is a valid email address.
   - [ ] url - Checks if value is a valid URL address.
   - [ ] ip - Checks if value is a valid IP address.
   - [ ] creditCard - Checks if value is a valid credit card number.
