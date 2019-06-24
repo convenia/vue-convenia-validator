@@ -21,7 +21,7 @@ const rule: ValidationRule = {
 
     return regex.test(value)
   },
-  message: 'Data inválida'
+  message: 'Hora inválida'
 }
 
 RuleContainer.add('hour', rule)
