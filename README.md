@@ -120,6 +120,7 @@ export default {
   - [x] numeric - Check if all characters in a string are numbers.
   - [x] regex - Tests a RegExp on value.
   - [x] required - Checks if value isn't empty.
+  - [x] hour - Checks if value is a valid hour
   - [ ] dateBetween - Checks if date is in between two date values.
   - [ ] dateBefore - Checks if given date comes before another date.
   - [ ] dateAfter - Checks if given date comes after another date.
