@@ -19,7 +19,6 @@ export default
     .substring(file.name.lastIndexOf('.'))
     .toLowerCase()
 
-
   return sizeLimit != null
     ? accept.includes(fileExt) && file.size <= limitInBytes
     : accept.includes(fileExt)
