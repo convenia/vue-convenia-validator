@@ -1,33 +1,31 @@
 import RuleContainer from '../core/ruleContainer'
 import { ValidationRule } from '../types'
 
-import fileValidator, { SizeUnit } from '../utils/fileValidator'
+import fileValidator, { FileValidatorOpts } from '../utils/fileValidator'
+
+const defaultArgs: FileValidatorOpts =
+{ multiple: false
+, accept: []
+, sizeLimit: null
+, sizeUnit: 'KB'
+}
 
 /**
  * @param {File|FileList} value - The file or Array of files (FileList)
- * @param {Array<string>} multiple - Whether or not it is an Array of Files
- * @param {Array<string>} accept - The file types that are accepted
- * @param {Number|String} sizeLimit - Optional size limit for the file (s)
- * @param {SizeUnit} sizeUnit - Determines the unit used for the sizeLimit,
- * one of <'B', 'KB', 'MB' or 'GB'>
+ * @param {FileValidatorOpts} options - An object with FileValidatorOptions
  *
  * @author Erik Isidore
  */
 
 const rule: ValidationRule = {
-  validate: (
-    value: File | FileList,
-    multiple: boolean,
-    accept: Array<string>,
-    sizeLimit: number | string,
-    sizeUnit: SizeUnit = 'KB'
-  ): boolean => {
+  validate: (value: File | FileList, options: FileValidatorOpts): boolean => {
     if (!value) return true
-    
-    if (multiple)
-      return Array
-        .from((value as FileList))
-        .every((file: File) => fileValidator(file, accept, sizeLimit, sizeUnit))
+
+    const { multiple, accept, sizeLimit, sizeUnit } = { ...defaultArgs, ...options }
+
+    if (multiple) return Array
+      .from((value as FileList))
+      .every((file: File) => fileValidator(file, accept, sizeLimit, sizeUnit))
 
     return fileValidator(value as File, accept, sizeLimit, sizeUnit)
   },
