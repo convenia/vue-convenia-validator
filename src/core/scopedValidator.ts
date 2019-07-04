@@ -4,7 +4,7 @@ import FieldBag from './fieldBag'
 import Field from './field'
 
 import RuleContainer from './ruleContainer'
-import { isFormScope, is } from '../utils'
+import { is } from '../utils'
 import '../rules'
 
 import {
@@ -81,7 +81,7 @@ export default class ScopedValidator {
   }
 
   private __init (template: FormTemplate): void {
-    this.scopes = Object.keys(template).filter(key => isFormScope(template[key]))
+    this.scopes = Object.keys(template)
     this.fields.items = this.initFields(template)
     this.validations = this.mapValidations()
   }
@@ -120,11 +120,7 @@ export default class ScopedValidator {
         .map(fieldName => mapField(fieldName, formScope[fieldName], scope))
     })
 
-    const fields: Field[] = Object.keys(template)
-      .filter(key => !isFormScope(template[key]))
-      .map(key => mapField(key, template[key]))
-
-    return Array.prototype.concat(fields, ...scopes)
+    return Array.prototype.concat([], ...scopes)
   }
 
   /**
