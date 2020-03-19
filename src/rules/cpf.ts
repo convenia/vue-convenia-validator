@@ -2,6 +2,8 @@ import RuleContainer from '../core/ruleContainer'
 import { ValidationRule } from '../types'
 import { is } from '../utils'
 
+const invalidCpfs = Array.from({ length: 10 }, (_, n) => n.toString().repeat(11))
+
 /**
  * Checks if given value is a valid CPF number.
  *
@@ -29,8 +31,9 @@ const rule: ValidationRule = {
     value = value.replace(/[\D]/gi, '')
 
     if (!value.match(/^\d+$/)) return false
+    if (value.length !== 11) return false
 
-    if (value === '00000000000' || value.length !== 11) return false
+    if (invalidCpfs.includes(value)) return false
 
     if (isInvalid(value, getRest(sumDigit(value, 9)), 9)) return false
 

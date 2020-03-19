@@ -13,5 +13,7 @@ describe('Rule: CPF', () => {
     expect(cpf.validate('27722398983')).toBe(false)
     expect(cpf.validate('06291894910')).toBe(false)
     expect(cpf.validate('884.462.650-0s')).toBe(false)
+    expect(cpf.validate('111.111.111-11')).toBe(false)
+    expect(cpf.validate('999.999.999-99')).toBe(false)
   })
 })
