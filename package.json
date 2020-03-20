@@ -1,6 +1,6 @@
 {
   "name": "vue-convenia-validator",
-  "version": "0.1.51",
+  "version": "0.1.52",
   "description": "A model-based form validation library for vue inspired by vuelidate and vee-validate.",
   "module": "dist/cee-validate.es5.js",
   "main": "dist/cee-validate.umd.js",
@@ -36,7 +36,7 @@
     "test:watch": "jest --watch",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
     "watch": "rollup -cw",
-    "build": "npm run clear && rollup -c"
+    "build": "yarn clear && rollup -c"
   },
   "devDependencies": {
     "@types/jest": "^23.3.9",
