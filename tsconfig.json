@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es2015",
+    "strict": true,
+    "outDir": "./dist",
+    "declaration": true,
+    "declarationDir": "./dist/types",
+    "typeRoots": [ "node_modules/@types" ],
+    "emitDecoratorMetadata": true,
+    "importHelpers": true,
+    "strictPropertyInitialization": false,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "baseUrl": "./src",
+    "lib": [
+      "es2015",
+      "es2016",
+      "es2017",
+      "dom"
+    ]
+  },
+  "include": [ "./src/**/*.ts" ],
+  "exclude": [ "node_modules" ]
+}
