@@ -1,24 +1,28 @@
 {
-  "name": "vue-convenia-validator",
+  "name": "@convenia/validator",
   "version": "0.1.52",
   "description": "A model-based form validation library for vue inspired by vuelidate and vee-validate.",
   "module": "dist/cee-validate.es5.js",
   "main": "dist/cee-validate.umd.js",
   "types": "dist/types/index.d.ts",
+  "private": true,
+  "publishConfig": {
+    "registry": "https://packages.frontend.convenia.com.br"
+  },
   "files": [
     "dist"
   ],
-  "repository": "https://github.com/iErik/cee-validate",
+  "repository": "https://gitlab.com/convenia/general-lib/validator",
   "license": "MIT",
   "author": {
     "name": "Erik Isidore",
-    "email": "ericssonico@protonmail.ch"
+    "email": "ericsson.isidoro@convenia.com.br"
   },
   "bugs": {
-    "url": "https://github.com/iErik/cee-validate/issues"
+    "url": "https://gitlab.com/convenia/general-lib/validator/issues"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.0.0"
   },
   "keywords": [
     "validation",
