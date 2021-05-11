@@ -161,7 +161,9 @@ export default class ScopedValidator {
       ? `form[name="${scope}"] [name="${fieldName}"]`
       : `[name="${fieldName}"]`
 
-    const fields: NodeList = this._vm.$el.querySelectorAll(fieldQuery)
+    const fields: NodeList = ((this._vm || {}).$el || {}).querySelectorAll
+      ? this._vm.$el.querySelectorAll(fieldQuery)
+      : []
 
     if (process.env.NODE_ENV !== 'production' && !fields.length)
       console.warn(`CeeValidate: Field "${fieldName}" could not be found in the DOM`)
