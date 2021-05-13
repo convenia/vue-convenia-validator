@@ -161,7 +161,7 @@ export default class ScopedValidator {
       ? `form[name="${scope}"] [name="${fieldName}"]`
       : `[name="${fieldName}"]`
 
-    const fields: NodeList = ((this._vm || {}).$el || {}).querySelectorAll
+    const fields: NodeList | Array<null> = ((this._vm || {}).$el || {}).querySelectorAll
       ? this._vm.$el.querySelectorAll(fieldQuery)
       : []
 
