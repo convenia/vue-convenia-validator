@@ -1,11 +1,10 @@
 {
   "name": "@convenia/validator",
-  "version": "0.1.53",
+  "version": "1.0.2",
   "description": "A model-based form validation library for vue inspired by vuelidate and vee-validate.",
   "module": "dist/cee-validate.es5.js",
   "main": "dist/cee-validate.umd.js",
   "types": "dist/types/index.d.ts",
-  "private": true,
   "publishConfig": {
     "registry": "https://packages.frontend.convenia.com.br"
   },
