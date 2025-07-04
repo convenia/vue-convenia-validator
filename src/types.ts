@@ -1,3 +1,4 @@
+import ScopedValidator from './core/scopedValidator'
 export type FieldValidation = string | Array<string> | { [rule: string]: any }
 export type FormValidation = { [fieldName: string]: FieldValidation }
 
@@ -14,6 +15,7 @@ export interface FieldItem {
   scope?: string
   el: Element
   rules: FieldValidation
+  validator: ScopedValidator
 }
 
 export type FieldFlags = {

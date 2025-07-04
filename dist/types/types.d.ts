@@ -1,14 +1,15 @@
-export declare type FieldValidation = string | Array<string> | {
+import ScopedValidator from './core/scopedValidator';
+export type FieldValidation = string | Array<string> | {
     [rule: string]: any;
 };
-export declare type FormValidation = {
+export type FormValidation = {
     [fieldName: string]: FieldValidation;
 };
-export declare type NormalizedRule = {
+export type NormalizedRule = {
     ruleName: string;
     args?: any;
 };
-export declare type ValidationRule = {
+export type ValidationRule = {
     validate: (value: any, ...args: any) => boolean;
     message: string;
 };
@@ -19,8 +20,9 @@ export interface FieldItem {
     scope?: string;
     el: Element;
     rules: FieldValidation;
+    validator: ScopedValidator;
 }
-export declare type FieldFlags = {
+export type FieldFlags = {
     pristine: boolean;
     dirty: boolean;
     touched: boolean;
@@ -28,8 +30,8 @@ export declare type FieldFlags = {
     valid: boolean;
     errors: string[];
 };
-export declare type ValidatorOptions = ValidatorOptionsObject | ValidatorOptionsFn;
-export declare type ValidatorOptionsFn = (vm: any) => ValidatorOptionsObject;
-export declare type ValidatorOptionsObject = {
+export type ValidatorOptions = ValidatorOptionsObject | ValidatorOptionsFn;
+export type ValidatorOptionsFn = (vm: any) => ValidatorOptionsObject;
+export type ValidatorOptionsObject = {
     noListeners?: boolean;
 };

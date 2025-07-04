@@ -2,7 +2,7 @@ import Field from './field';
 export default class FieldBag {
     private _items;
     constructor(items?: Field[]);
-    items: Field | Field[];
+    set items(items: Field | Field[]);
     /**
      * Returns the corresping Field instance, or undefined if not found.
      *

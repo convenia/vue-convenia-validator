@@ -1,16 +1,15 @@
-import { Vue as VueComponent } from 'vue-property-decorator';
 import FieldBag from './fieldBag';
 import Field from './field';
 import '../rules';
 import { FormValidation, FieldValidation, FieldFlags } from '../types';
-export interface VM extends VueComponent {
+export interface VM {
     [dataName: string]: any;
 }
-export declare type ScopedFormValidation = {
+export type ScopedFormValidation = {
     [scope: string]: FormValidation;
 };
-export declare type FormTemplate = ScopedFormValidation | FormValidation;
-export declare type FormValidationFlags = {
+export type FormTemplate = ScopedFormValidation | FormValidation;
+export type FormValidationFlags = {
     [scope: string]: {
         [fieldName: string]: FieldFlags;
     };
@@ -22,9 +21,10 @@ export default class ScopedValidator {
     fields: FieldBag;
     scopes: string[];
     private _options;
-    validations: FormValidationFlags;
-    constructor(vm: VueComponent);
-    options: any;
+    validations: any;
+    constructor(vm: any);
+    get options(): any;
+    set options(options: any);
     /**
      * This two following functions are responsible for bootstraping
      * the ScopedValidation class with the given validation options.
@@ -69,8 +69,8 @@ export default class ScopedValidator {
      */
     getFieldEl(fieldName: string, scope?: string): Element;
     /**
-     * @param {String} fieldName -
-     * @param {String} scope? -
+     * @param {String} fieldName - The name of the field to validate
+     * @param {String} scope? - Optional form scope
      * @returns {void}
      *
      * @author Erik Isidore

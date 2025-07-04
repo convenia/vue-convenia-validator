@@ -1,6 +1,6 @@
 import { ValidationRule } from '../types';
 export default class RuleContainer {
-    static readonly rules: {
+    static get rules(): {
         [ruleName: string]: ValidationRule;
     };
     /**

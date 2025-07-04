@@ -1,6 +1,7 @@
 import { FieldItem, FieldFlags, NormalizedRule, FieldValidation } from '../types';
 export default class Field {
     private _vm;
+    private _validator;
     private initialValue;
     private _flags;
     value: any;
@@ -9,12 +10,12 @@ export default class Field {
     el: Element;
     rules: NormalizedRule[];
     constructor(options: FieldItem);
-    readonly validate: any;
-    readonly watch: any;
-    readonly options: any;
-    readonly flags: FieldFlags;
-    readonly errors: string[];
-    readonly error: string;
+    get validate(): any;
+    get watch(): any;
+    get options(): any;
+    get flags(): FieldFlags;
+    get errors(): string[];
+    get error(): string;
     /**
      * Sets a new value to one of the instance's FieldFlags.
      *

@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('vue-property-decorator'), require('dayjs-ext')) :
-    typeof define === 'function' && define.amd ? define(['vue-property-decorator', 'dayjs-ext'], factory) :
-    (global['dist/cee-validate'] = global['dist/cee-validate'] || {}, global['dist/cee-validate'].umd = global['dist/cee-validate'].umd || {}, global['dist/cee-validate'].umd.js = factory(global.vuePropertyDecorator,global.dayjs));
-}(this, (function (vuePropertyDecorator,dayjs) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('vue'), require('dayjs-ext')) :
+    typeof define === 'function' && define.amd ? define(['vue', 'dayjs-ext'], factory) :
+    (global['dist/cee-validate'] = global['dist/cee-validate'] || {}, global['dist/cee-validate'].umd = global['dist/cee-validate'].umd || {}, global['dist/cee-validate'].umd.js = factory(global.vue,global.dayjs));
+}(this, (function (vue,dayjs) { 'use strict';
 
     dayjs = dayjs && dayjs.hasOwnProperty('default') ? dayjs['default'] : dayjs;
 
@@ -20,20 +20,6 @@
     See the Apache Version 2.0 License for specific language governing permissions
     and limitations under the License.
     ***************************************************************************** */
-    /* global Reflect, Promise */
-
-    var extendStatics = function(d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-
-    function __extends(d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    }
 
     var __assign = function() {
         __assign = Object.assign || function __assign(t) {
@@ -46,13 +32,6 @@
         return __assign.apply(this, arguments);
     };
 
-    function __decorate(decorators, target, key, desc) {
-        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-        return c > 3 && r && Object.defineProperty(target, key, r), r;
-    }
-
     var FieldBag = /** @class */ (function () {
         function FieldBag(items) {
             this._items = items || [];
@@ -61,7 +40,7 @@
             set: function (items) {
                 this.push(items);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -135,7 +114,7 @@
             get: function () {
                 return RULES;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -187,7 +166,7 @@
      * @author Vitor Luiz Cavalcanti (https://github.com/VitorLuizC)
      */
     var is = function (value, constructor) {
-        return Object.prototype.toString.call(value) === "[object " + constructor + "]";
+        return Object.prototype.toString.call(value) === "[object ".concat(constructor, "]");
     };
 
     var Field = /** @class */ (function () {
@@ -207,49 +186,50 @@
             this.scope = options.scope;
             this.rules = this.mapRules(options.rules);
             this.initialValue = options.value;
+            this._validator = options.validator;
             this.init(options);
         }
         Object.defineProperty(Field.prototype, "validate", {
             get: function () {
-                if (!this._vm || !this._vm.$validator)
+                if (!this._validator)
                     return function () { return []; };
-                var validate = this._vm.$validator.validate;
-                return validate.bind(this._vm.$validator, this.name, this.scope);
+                var validate = this._validator.validate;
+                return validate.bind(this._validator, this.name, this.scope);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Field.prototype, "watch", {
             get: function () {
-                if (!this._vm || !this._vm.$validator)
+                if (!this._validator)
                     return;
-                return this._vm.$watch.bind(this._vm);
+                return this._vm.$watch.bind(this._validator);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Field.prototype, "options", {
             get: function () {
-                if (!this._vm || !this._vm.$validator)
+                if (!this._validator)
                     return;
-                return this._vm.$validator.options;
+                return this._validator.options;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Field.prototype, "flags", {
             get: function () { return this._flags; },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Field.prototype, "errors", {
             get: function () { return this._flags.errors; },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         Object.defineProperty(Field.prototype, "error", {
             get: function () { return this._flags.errors[0] || ''; },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -328,7 +308,10 @@
                 }
             };
             this.el.addEventListener('focusout', onBlur.bind(this));
-            this.watch(this.scope ? this.scope + "." + this.name : this.name, onInput.bind(this));
+            var watchValue = this.scope !== undefined
+                ? function () { var _a, _b; return (_b = (_a = _this._validator._vm) === null || _a === void 0 ? void 0 : _a[_this.scope]) === null || _b === void 0 ? void 0 : _b[_this.name]; }
+                : function () { var _a; return (_a = _this._validator._vm) === null || _a === void 0 ? void 0 : _a[_this.name]; };
+            this.watch(watchValue, onInput.bind(this));
         };
         /**
          * Receives a FieldValidation entity, which can be
@@ -736,7 +719,7 @@
         validate: function (value, options) {
             if (!value)
                 return true;
-            var _a = __assign({}, defaultArgs, options), multiple = _a.multiple, accept = _a.accept, sizeLimit = _a.sizeLimit, sizeUnit = _a.sizeUnit;
+            var _a = __assign(__assign({}, defaultArgs), options), multiple = _a.multiple, accept = _a.accept, sizeLimit = _a.sizeLimit, sizeUnit = _a.sizeUnit;
             if (multiple)
                 return Array
                     .from(value)
@@ -752,7 +735,7 @@
             var _this = this;
             this.scopes = [];
             this._options = {};
-            this.validations = {};
+            this.validations = vue.ref({});
             this._vm = vm;
             this.fields = new FieldBag();
             vm.$nextTick(function () {
@@ -771,7 +754,7 @@
                     ? options(this._vm)
                     : __assign({}, options);
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         /**
@@ -792,7 +775,7 @@
         ScopedValidator.prototype.__init = function (template) {
             this.scopes = Object.keys(template);
             this.fields.items = this.initFields(template);
-            this.validations = this.mapValidations();
+            this.validations.value = this.mapValidations();
         };
         /**
          * Receives a FormTemplate object and maps the fields validation rules
@@ -805,7 +788,6 @@
          */
         ScopedValidator.prototype.initFields = function (template) {
             var _this = this;
-            var _a;
             var mapField = function (name, rules, scope) {
                 var fieldOptions = {
                     name: name,
@@ -814,18 +796,18 @@
                     vm: _this._vm,
                     el: _this.getFieldEl(name, scope),
                     value: scope ? _this._vm[scope][name] : _this._vm[name],
+                    validator: _this
                 };
                 return new Field(fieldOptions);
             };
             // This will map each form scope name to an array of Field instances,
             // producing an Array of Field arrays, crazy rite? Each field will
             // have its respective scope assigned to it.
-            var scopes = this.scopes.map(function (scope) {
+            return this.scopes.flatMap(function (scope) {
                 var formScope = template[scope];
                 return Object.keys(formScope)
                     .map(function (fieldName) { return mapField(fieldName, formScope[fieldName], scope); });
             });
-            return (_a = Array.prototype).concat.apply(_a, [[]].concat(scopes));
         };
         /**
          * Generetes the validation flags object based on the form scopes.
@@ -839,11 +821,11 @@
             var mapFlags = function (scope) { return _this.fields.all(scope)
                 .reduce(function (acc, field) {
                 var _a;
-                return (__assign({}, acc, (_a = {}, _a[field.name] = field.flags, _a)));
+                return (__assign(__assign({}, acc), (_a = {}, _a[field.name] = field.flags, _a)));
             }, {}); };
             var mapFormScopes = function (acc, scope) {
                 var _a;
-                return (__assign({}, acc, (_a = {}, _a[scope] = mapFlags(scope), _a)));
+                return (__assign(__assign({}, acc), (_a = {}, _a[scope] = mapFlags(scope), _a)));
             };
             return this.scopes.length > 1
                 ? this.scopes.reduce(mapFormScopes, {})
@@ -861,16 +843,16 @@
          */
         ScopedValidator.prototype.getFieldEl = function (fieldName, scope) {
             var fieldQuery = scope
-                ? "form[name=\"" + scope + "\"] [name=\"" + fieldName + "\"]"
-                : "[name=\"" + fieldName + "\"]";
+                ? "form[name=\"".concat(scope, "\"] [name=\"").concat(fieldName, "\"]")
+                : "[name=\"".concat(fieldName, "\"]");
             var fields = this._vm.$el.querySelectorAll(fieldQuery);
             if (process.env.NODE_ENV !== 'production' && !fields.length)
-                console.warn("CeeValidate: Field \"" + fieldName + "\" could not be found in the DOM");
+                console.warn("CeeValidate: Field \"".concat(fieldName, "\" could not be found in the DOM"));
             return fields[0];
         };
         /**
-         * @param {String} fieldName -
-         * @param {String} scope? -
+         * @param {String} fieldName - The name of the field to validate
+         * @param {String} scope? - Optional form scope
          * @returns {void}
          *
          * @author Erik Isidore
@@ -883,7 +865,9 @@
             var mapErrors = function (_a) {
                 var ruleName = _a.ruleName, args = _a.args;
                 var rule = RuleContainer.getRule(ruleName);
-                var hasError = !rule.validate.apply(null, [field.value].concat((args || [])));
+                var validationArgs = [field.value];
+                args.forEach(function (arg) { return validationArgs.push(arg); });
+                var hasError = !rule.validate.apply(null, validationArgs);
                 var errorMessage = rule.message;
                 return hasError ? errorMessage : '';
             };
@@ -906,7 +890,7 @@
             var fieldFlags = this.fields.all(scope)
                 .map(function (field) { return field.validate(); });
             var isValid = fieldFlags.every(function (isValid) { return !!isValid; });
-            this.options = __assign({}, (this.options || {}), { noListeners: false });
+            this.options = __assign(__assign({}, (this.options || {})), { noListeners: false });
             return isValid;
         };
         /**
@@ -935,10 +919,11 @@
                 rules: field.rules,
                 scope: field.scope,
                 el: this.getFieldEl(field.name, field.scope),
-                value: field.scope ? this._vm[field.scope][field.name] : this._vm[field.name]
+                value: field.scope ? this._vm[field.scope][field.name] : this._vm[field.name],
+                validator: this
             });
             this.fields.push(newField);
-            this.validations = this.mapValidations();
+            this.validations.value = this.mapValidations();
         };
         /**
          * Detaches an existing field from the validator.
@@ -951,7 +936,7 @@
          */
         ScopedValidator.prototype.detach = function (field, scope) {
             this.fields.remove(field, scope);
-            this.validations = this.mapValidations();
+            this.validations.value = this.mapValidations();
         };
         /**
          * Sets the rule of a field and validate it if it has changed.
@@ -972,32 +957,30 @@
         return ScopedValidator;
     }());
 
-    // eslint-disable
-    var FormValidator = /** @class */ (function (_super) {
-        __extends(FormValidator, _super);
-        function FormValidator() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        // In the future we'll use this function to pass mixin options
-        // and make some checkings before instantiating the ScopedValidator
-        FormValidator.prototype.beforeCreate = function () {
-            var _this = this;
-            // Get Vue constructor
-            var Vue = this.$options._base;
-            this.$validator = new ScopedValidator(this);
-            // Setup computed properties on the component
-            if (!this.$options.computed)
-                this.$options.computed = {};
-            Vue.util.defineReactive(this.$validator, 'validations', this.$validator.validations);
-            this.$options.computed['$validations'] = function () { return _this.$validator.validations; };
+    var index = (function (formElRef, options) {
+        var validator = vue.ref(null);
+        var validations = vue.computed(function () { var _a; return (_a = validator === null || validator === void 0 ? void 0 : validator.value) === null || _a === void 0 ? void 0 : _a.validations; });
+        var _a = options || {}, validatorOptions = _a.validatorOptions, scope = _a.scope, formData = _a.formData;
+        vue.onMounted(function () {
+            var _a;
+            validator.value = new ScopedValidator((_a = {
+                    $nextTick: vue.nextTick,
+                    $options: {
+                        validatorOptions: validatorOptions
+                    }
+                },
+                _a[scope] = formData,
+                _a.$el = formElRef.value,
+                _a.$watch = vue.watch,
+                _a));
+        });
+        return {
+            validator: validator,
+            validations: validations
         };
-        FormValidator = __decorate([
-            vuePropertyDecorator.Component
-        ], FormValidator);
-        return FormValidator;
-    }(vuePropertyDecorator.Vue));
+    });
 
-    return FormValidator;
+    return index;
 
 })));
 //# sourceMappingURL=cee-validate.umd.js.map

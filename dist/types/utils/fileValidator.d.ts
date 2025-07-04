@@ -1,11 +1,10 @@
-export declare type SizeUnit = 'B' | 'KB' | 'MB' | 'GB';
-export declare type FileValidatorOpts = {
+export type SizeUnit = 'B' | 'KB' | 'MB' | 'GB';
+export type FileValidatorOpts = {
     multiple: boolean;
     accept: Array<string>;
     sizeLimit: number | string | null;
     sizeUnit: SizeUnit;
 };
-declare const _default: (file: File, accept: string[], sizeLimit: string | number | null, sizeUnit?: SizeUnit) => boolean;
 /**
  * @param {File} value - The file
  * @param {Array<string>} multiple - Whether or not it is an Array of Files
@@ -16,4 +15,5 @@ declare const _default: (file: File, accept: string[], sizeLimit: string | numbe
  *
  * @author Erik Isidore
  */
+declare const _default: (file: File, accept: Array<string>, sizeLimit: number | string | null, sizeUnit?: SizeUnit) => boolean;
 export default _default;

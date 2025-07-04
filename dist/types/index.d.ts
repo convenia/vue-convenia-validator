@@ -1,7 +1,5 @@
-import { Vue } from 'vue-property-decorator';
-import ScopedValidator from './core/scopedValidator';
-export default class FormValidator extends Vue {
-    $validator: ScopedValidator;
-    $validations: object;
-    beforeCreate(): void;
-}
+declare const _default: (formElRef: any, options: any) => {
+    validator: any;
+    validations: any;
+};
+export default _default;

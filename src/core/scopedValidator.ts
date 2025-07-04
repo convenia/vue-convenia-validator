@@ -1,5 +1,4 @@
-import { Vue as VueComponent } from 'vue-property-decorator'
-
+import { ref, computed } from 'vue'
 import FieldBag from './fieldBag'
 import Field from './field'
 
@@ -21,7 +20,7 @@ import {
 
 // ScopedValidor specific types
 
-export interface VM extends VueComponent { [dataName: string]: any }
+export interface VM { [dataName: string]: any }
 export type ScopedFormValidation = { [scope: string]: FormValidation }
 export type FormTemplate = ScopedFormValidation | FormValidation
 
@@ -37,10 +36,9 @@ export default class ScopedValidator {
   public scopes: string[] = []
 
   private _options: ValidatorOptionsObject = {}
-  public validations: FormValidationFlags = {}
+  public validations: any = ref({})
 
-
-  constructor (vm: VueComponent) {
+  constructor (vm: any) {
     this._vm = vm
     this.fields = new FieldBag()
 
@@ -83,7 +81,7 @@ export default class ScopedValidator {
   private __init (template: FormTemplate): void {
     this.scopes = Object.keys(template)
     this.fields.items = this.initFields(template)
-    this.validations = this.mapValidations()
+    this.validations.value = this.mapValidations()
   }
 
   /**
@@ -105,6 +103,7 @@ export default class ScopedValidator {
         vm: this._vm,
         el: this.getFieldEl(name, scope),
         value: scope ? this._vm[scope][name] : this._vm[name],
+        validator: this
       }
 
       return new Field(fieldOptions)
@@ -113,14 +112,12 @@ export default class ScopedValidator {
     // This will map each form scope name to an array of Field instances,
     // producing an Array of Field arrays, crazy rite? Each field will
     // have its respective scope assigned to it.
-    const scopes = this.scopes.map((scope: string) => {
+    return this.scopes.flatMap((scope: string) => {
       const formScope: FormValidation = template[scope] as FormValidation
 
       return Object.keys(formScope)
         .map(fieldName => mapField(fieldName, formScope[fieldName], scope))
     })
-
-    return Array.prototype.concat([], ...scopes)
   }
 
   /**
@@ -165,13 +162,12 @@ export default class ScopedValidator {
 
     if (process.env.NODE_ENV !== 'production' && !fields.length)
       console.warn(`CeeValidate: Field "${fieldName}" could not be found in the DOM`)
-
-    return <Element>fields[0]
+    return fields[0] as Element
   }
 
   /**
-   * @param {String} fieldName -
-   * @param {String} scope? -
+   * @param {String} fieldName - The name of the field to validate
+   * @param {String} scope? - Optional form scope
    * @returns {void}
    *
    * @author Erik Isidore
@@ -185,7 +181,10 @@ export default class ScopedValidator {
 
     const mapErrors = ({ ruleName, args }: NormalizedRule): string => {
       const rule: ValidationRule = RuleContainer.getRule(ruleName)
-      const hasError = !rule.validate.apply(null, [field.value, ...(args || [])])
+      const validationArgs: any[] = [ field.value ]
+      args.forEach((arg: any) => validationArgs.push(arg))
+
+      const hasError = !rule.validate.apply(null, validationArgs as any)
       const errorMessage = rule.message
 
       return hasError ? errorMessage : ''
@@ -249,11 +248,12 @@ export default class ScopedValidator {
       rules: field.rules,
       scope: field.scope,
       el: this.getFieldEl(field.name, field.scope),
-      value: field.scope ? this._vm[field.scope][field.name] : this._vm[field.name]
+      value: field.scope ? this._vm[field.scope][field.name] : this._vm[field.name],
+      validator: this
     })
 
     this.fields.push(newField)
-    this.validations = this.mapValidations()
+    this.validations.value = this.mapValidations()
   }
 
   /**
@@ -268,7 +268,7 @@ export default class ScopedValidator {
 
   detach (field: string, scope?: string): void {
     this.fields.remove(field, scope)
-    this.validations = this.mapValidations()
+    this.validations.value = this.mapValidations()
   }
 
   /**

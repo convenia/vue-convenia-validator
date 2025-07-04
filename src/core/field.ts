@@ -1,16 +1,17 @@
-import FormValidator from '../index'
+import ScopedValidator from './scopedValidator'
 import { is } from '../utils'
 
 import {
   FieldItem,
   FieldFlags,
   NormalizedRule,
-  FieldValidation
+  FieldValidation,
 } from '../types'
 
 
 export default class Field {
-  private _vm: FormValidator
+  private _vm: any
+  private _validator: ScopedValidator
   private initialValue: string
 
   private _flags: FieldFlags = {
@@ -36,27 +37,28 @@ export default class Field {
     this.scope = options.scope
     this.rules = this.mapRules(options.rules)
     this.initialValue = options.value
+    this._validator = options.validator
 
     this.init(options)
   }
 
   get validate (): any {
-    if (!this._vm || !this._vm.$validator) return () => []
+    if (!this._validator) return () => []
 
-    const validate = this._vm.$validator.validate
-    return validate.bind(this._vm.$validator, this.name, this.scope)
+    const validate = this._validator.validate
+    return validate.bind(this._validator, this.name, this.scope)
   }
 
   get watch (): any {
-    if (!this._vm || !this._vm.$validator) return
+    if (!this._validator) return
 
-    return this._vm.$watch.bind(this._vm)
+    return this._vm.$watch.bind(this._validator)
   }
 
   get options (): any {
-    if (!this._vm || !this._vm.$validator) return
+    if (!this._validator) return
 
-    return this._vm.$validator.options
+    return this._validator.options
   }
 
 
@@ -78,7 +80,7 @@ export default class Field {
   setFlag (flag: keyof FieldFlags, value: boolean | string[]): void {
     if (!Object.keys(this._flags).includes(flag)) return
 
-    this._flags[flag] = value
+    this._flags[flag] = value as any
   }
 
   /**
@@ -116,7 +118,7 @@ export default class Field {
     }
 
     flagNames.forEach((flag: keyof FieldFlags) => {
-      this._flags[flag] = defaultFlags[flag]
+      this._flags[flag] = defaultFlags[flag] as any
     })
   }
 
@@ -150,7 +152,11 @@ export default class Field {
     }
 
     this.el.addEventListener('focusout', onBlur.bind(this))
-    this.watch(this.scope ? `${this.scope}.${this.name}` : this.name, onInput.bind(this))
+    const watchValue = this.scope !== undefined
+      ? () => (this._validator as any)._vm?.[this.scope!]?.[this.name]
+      : () => (this._validator as any)._vm?.[this.name]
+
+    this.watch(watchValue, onInput.bind(this))
   }
 
   /**
